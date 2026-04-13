@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: oklch(0.99 0.01 255);
+  --color-foreground: oklch(0.22 0.03 255);
+
+  --color-primary: oklch(0.78 0.21 200); /* Bright Cyan */
+  --color-secondary: oklch(0.72 0.22 286); /* Rich Purple */
+  --color-accent: oklch(0.8 0.19 335); /* Vibrant Pink */
+
+  --color-muted: oklch(0.92 0.02 260);
+  --color-muted-foreground: oklch(0.46 0.04 255);
+
+  --color-border: oklch(0.78 0.05 245 / 0.6);
+  --color-input: oklch(0.97 0.01 250);
+  --color-ring: oklch(0.78 0.21 200);
+
+  --radius-lg: 1rem;
+  --radius-md: calc(1rem - 2px);
+  --radius-sm: calc(1rem - 4px);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    overflow-x: hidden;
+    background:
+      radial-gradient(circle at 10% 12%, oklch(0.94 0.08 205 / 0.45), transparent 34%),
+      radial-gradient(circle at 88% 10%, oklch(0.9 0.09 286 / 0.36), transparent 36%),
+      radial-gradient(circle at 56% 98%, oklch(0.92 0.08 336 / 0.3), transparent 42%),
+      linear-gradient(160deg, #f6f9ff 0%, #f3f0ff 48%, #fff4fb 100%);
+  }
+}
+
+@utility glass {
+  background: linear-gradient(145deg, oklch(1 0 0 / 0.86), oklch(0.96 0.02 270 / 0.82));
+  backdrop-filter: blur(18px) saturate(145%);
+  border: 1px solid oklch(0.82 0.05 245 / 0.55);
+}
+
+@utility glass-card {
+  @apply glass shadow-[0_18px_40px_-10px_rgba(50,70,120,0.25)];
+}
+
+@utility neon-glow {
+  box-shadow: 0 0 26px oklch(0.86 0.18 202 / 0.7), 0 0 52px oklch(0.76 0.19 286 / 0.32);
+}
+
+@utility neon-text {
+  color: var(--color-primary);
+  filter: drop-shadow(0 0 12px oklch(0.86 0.18 202 / 0.75));
+}
+
+@utility app-bg {
+  background:
+    radial-gradient(circle at 12% 14%, oklch(0.94 0.08 205 / 0.36), transparent 35%),
+    radial-gradient(circle at 86% 16%, oklch(0.9 0.09 286 / 0.34), transparent 32%),
+    radial-gradient(circle at 56% 100%, oklch(0.92 0.08 336 / 0.25), transparent 44%),
+    linear-gradient(155deg, #f8faff 0%, #f3f0ff 52%, #fff5fb 100%);
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+@utility animate-float {
+  animation: float 3s ease-in-out infinite;
+}
