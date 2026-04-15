@@ -25,10 +25,10 @@ const Navbar = () => {
         </Link>
         
         <div className="hidden md:flex items-center gap-8 text-sm font-medium">
-          <Link to="/locations" className={`${isActive('/locations') ? 'text-primary' : 'text-zinc-700'} hover:text-primary transition-colors`}>Locations</Link>
-          <Link to="/pricing" className={`${isActive('/pricing') ? 'text-primary' : 'text-zinc-700'} hover:text-primary transition-colors`}>Pricing</Link>
-          <Link to="/analytics" className={`${isActive('/analytics') ? 'text-primary' : 'text-zinc-700'} hover:text-primary transition-colors`}>Analytics</Link>
-          <Link to="/login" className={`${isActive('/login') ? 'text-primary' : 'text-zinc-700'} hover:text-primary transition-colors`}>Login</Link>
+          <Link to="/locations" className={`${isActive('/locations') ? 'text-primary neon-text' : 'text-zinc-300'} hover:text-primary hover:neon-text transition-all`}>Locations</Link>
+          <Link to="/pricing" className={`${isActive('/pricing') ? 'text-primary neon-text' : 'text-zinc-300'} hover:text-primary hover:neon-text transition-all`}>Pricing</Link>
+          <Link to="/analytics" className={`${isActive('/analytics') ? 'text-primary neon-text' : 'text-zinc-300'} hover:text-primary hover:neon-text transition-all`}>Analytics</Link>
+          <Link to="/login" className={`${isActive('/login') ? 'text-primary neon-text' : 'text-zinc-300'} hover:text-primary hover:neon-text transition-all`}>Login</Link>
         </div>
       </div>
     </nav>
