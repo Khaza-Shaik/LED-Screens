@@ -1,4 +1,4 @@
-import { useState, useEffect, Suspense, useRef, useMemo } from 'react';
+import { useState, useEffect, Suspense, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, Float, MeshDistortMaterial, Sphere, GradientTexture } from '@react-three/drei';
@@ -7,11 +7,19 @@ import { MapPin, BarChart3, ChevronRight, Shield, Zap, Globe } from 'lucide-reac
 import * as THREE from 'three';
 
 // --- 3D Components ---
+const PARTICLE_POSITIONS = Array.from({ length: 10 }, () => [
+  (Math.random() - 0.5) * 15,
+  (Math.random() - 0.5) * 10,
+  (Math.random() - 0.5) * 10,
+] as [number, number, number]);
+
 function BillboardModel() {
   const meshRef = useRef<THREE.Mesh>(null);
   useFrame((state) => {
     if (meshRef.current) {
-      meshRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.2;
+      // Using elapsed time for smooth rotation
+      const time = state.clock.getElapsedTime();
+      meshRef.current.rotation.y = Math.sin(time * 0.5) * 0.2;
     }
   });
   return (
@@ -39,16 +47,6 @@ function BillboardModel() {
 }
 
 function Scene() {
-  const particlePositions = useMemo(
-    () =>
-      Array.from({ length: 10 }, () => [
-        (Math.random() - 0.5) * 15,
-        (Math.random() - 0.5) * 10,
-        (Math.random() - 0.5) * 10,
-      ] as [number, number, number]),
-    [],
-  );
-
   return (
     <>
       <PerspectiveCamera makeDefault position={[0, 2, 8]} fov={50} />
@@ -60,7 +58,7 @@ function Scene() {
         <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
           <BillboardModel />
         </Float>
-        {particlePositions.map((position, i) => (
+        {PARTICLE_POSITIONS.map((position, i) => (
           <Sphere key={i} args={[0.05, 8, 8]} position={position}>
             <meshStandardMaterial color="#00f2ff" emissive="#00f2ff" emissiveIntensity={5} transparent opacity={0.4} />
           </Sphere>
@@ -71,20 +69,7 @@ function Scene() {
   );
 }
 
-interface Billboard {
-  id: string | number;
-  location: string;
-  status: string;
-  price: string;
-  impressions: string;
-  image?: string;
-}
-
-const fallbackBillboards: Billboard[] = [
-  { id: 1, location: "Times Square, NYC", status: "Active", price: "$5,000/hr", impressions: "1.5M", image: "https://images.unsplash.com/photo-1542204165-65bf26472b9b?auto=format&fit=crop&w=1920&q=80" },
-  { id: 2, location: "Shibuya Crossing, Tokyo", status: "Active", price: "$4,200/hr", impressions: "2.1M", image: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=1920&q=80" },
-  { id: 3, location: "Piccadilly Circus, London", status: "High Demand", price: "$6,100/hr", impressions: "1.8M", image: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=1920&q=80" }
-];
+import { FALLBACK_BILLBOARDS, type Billboard } from '../data/inventory';
 
 const BillboardGrid = () => {
   const [billboards, setBillboards] = useState<Billboard[]>([]);
@@ -97,12 +82,12 @@ const BillboardGrid = () => {
         return res.json();
       })
       .then(data => {
-        setBillboards(data.length ? data : fallbackBillboards);
+        setBillboards(data.length ? data : FALLBACK_BILLBOARDS);
         setLoading(false);
       })
       .catch(err => {
         console.error("Failed to fetch billboards, using fallback data:", err);
-        setBillboards(fallbackBillboards);
+        setBillboards(FALLBACK_BILLBOARDS);
         setLoading(false);
       });
   }, []);
@@ -112,8 +97,8 @@ const BillboardGrid = () => {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
         <div>
           <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white tracking-tight">Premium <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Global Locations</span></h2>
-            <p className="text-zinc-400 max-w-xl text-lg">Access high-traffic digital billboards in the world's most iconic hotspots.</p>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white tracking-tight">Premium <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Indian Locations</span></h2>
+            <p className="text-zinc-400 max-w-xl text-lg">Access high-traffic digital billboards in the nation's most iconic hotspots.</p>
           </motion.div>
         </div>
         <Link to="/locations">
@@ -218,7 +203,7 @@ export default function Home() {
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-white to-secondary neon-text animate-pulse">ADVERTISING</span>
               </h1>
               <p className="text-lg md:text-xl text-zinc-400 mb-10 leading-relaxed max-w-xl pointer-events-auto">
-                Programmatically deploy your brand to premium digital billboards globally. Zero friction, total control, real-time ROI.
+                Programmatically deploy your brand to premium digital billboards across India. Zero friction, total control, real-time ROI.
               </p>
               <div className="pointer-events-auto flex flex-col sm:flex-row gap-4">
                 <Link to="/launch-campaign" className="px-8 py-4 bg-white text-black rounded-full font-bold hover:bg-zinc-200 transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:scale-105">
@@ -234,7 +219,7 @@ export default function Home() {
         <div className="relative z-20 glass py-8 border-y border-white/5 pointer-events-auto mt-auto backdrop-blur-xl bg-black/40">
           <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
-              { icon: Globe, color: 'text-primary', bg: 'bg-primary/10', title: 'Global Reach', value: '50+ Major Cities' },
+              { icon: Globe, color: 'text-primary', bg: 'bg-primary/10', title: 'National Reach', value: '25+ Indian Cities' },
               { icon: Zap, color: 'text-secondary', bg: 'bg-secondary/10', title: 'Deployment', value: 'Real-time (60s)' },
               { icon: Shield, color: 'text-zinc-300', bg: 'bg-white/10', title: 'Verification', value: 'PoA Compliance' },
               { icon: BarChart3, color: 'text-accent', bg: 'bg-accent/10', title: 'Analytics', value: 'Live ROI Tracking' }

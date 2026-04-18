@@ -33,8 +33,23 @@ const Analytics = () => {
             <h2 className="text-2xl font-bold">Campaign Trend</h2>
           </div>
 
-          <div className="h-72 rounded-2xl bg-gradient-to-br from-primary/10 to-secondary/10 border border-white/10 flex items-center justify-center">
-            <p className="text-zinc-500">Analytics chart placeholder</p>
+          <div className="h-80 rounded-2xl bg-black/40 border border-white/5 p-8 flex items-end gap-3 relative overflow-hidden group">
+            {/* Background decorative glow */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 blur-[100px] pointer-events-none" />
+            
+            {/* Mock Chart Bars */}
+            {[40, 70, 45, 90, 65, 85, 55, 75, 50, 95, 60, 80].map((height, i) => (
+              <div key={i} className="flex-1 flex flex-col items-center gap-3 group/bar">
+                <div 
+                  className="w-full bg-gradient-to-t from-primary/20 to-primary rounded-t-lg transition-all duration-700 ease-out group-hover/bar:brightness-125"
+                  style={{ height: `${height}%`, boxShadow: `0 0 20px rgba(0, 242, 255, ${height/200})` }}
+                />
+                <span className="text-[10px] text-zinc-600 font-bold">{['J','F','M','A','M','J','J','A','S','O','N','D'][i]}</span>
+              </div>
+            ))}
+
+            {/* Overlay Gradient */}
+            <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent pointer-events-none" />
           </div>
         </div>
       </div>

@@ -11,7 +11,7 @@ const Footer = () => {
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center neon-glow">
                 <Zap className="text-black fill-black" size={16} />
               </div>
-              <span className="text-lg font-bold tracking-tighter neon-text">ANTIGRAVITY</span>
+              <span className="text-lg font-bold tracking-tighter neon-text">HOME</span>
             </Link>
             <p className="text-zinc-400 text-sm mb-6">
               The premier platform for programmatic digital out-of-home advertising. Reach billions.
@@ -33,7 +33,7 @@ const Footer = () => {
             <h4 className="text-white font-bold mb-4 tracking-wider text-sm">PLATFORM</h4>
             <ul className="space-y-3 text-sm text-zinc-400">
               <li><Link to="/locations" className="hover:text-primary transition-colors">Locations</Link></li>
-              <li><Link to="/pricing" className="hover:text-primary transition-colors">Pricing</Link></li>
+              <li><Link to="/pricing" className="hover:text-primary transition-colors">Plans</Link></li>
               <li><Link to="/analytics" className="hover:text-primary transition-colors">Analytics</Link></li>
               <li><Link to="/features" className="hover:text-primary transition-colors">Features</Link></li>
             </ul>

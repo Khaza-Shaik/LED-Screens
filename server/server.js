@@ -9,9 +9,10 @@ app.use(express.json());
 
 // Mock Data
 const billboards = [
-  { id: 1, location: "Times Square, NY", status: "Active", price: "$500/hr", impressions: "1.2M daily" },
-  { id: 2, location: "Shibuya Crossing, Tokyo", status: "Active", price: "$450/hr", impressions: "800k daily" },
-  { id: 3, location: "Piccadilly Circus, London", status: "Maintenance", price: "$400/hr", impressions: "600k daily" },
+  { id: 1, location: "Cyber Hub, Gurgaon", status: "Active", price: "₹5,000/hr", impressions: "1.5M", lat: 28.4951, lng: 77.0878 },
+  { id: 2, location: "Bandra-Worli Sea Link, Mumbai", status: "Active", price: "₹4,200/hr", impressions: "2.1M", lat: 19.0371, lng: 72.8174 },
+  { id: 3, location: "Connaught Place, Delhi", status: "High Demand", price: "₹6,100/hr", impressions: "1.8M", lat: 28.6330, lng: 77.2194 },
+  { id: 4, location: "Brigade Road, Bengaluru", status: "Active", price: "₹8,000/hr", impressions: "3M", lat: 12.9734, lng: 77.6061 },
 ];
 
 const ads = [];
@@ -20,6 +21,41 @@ const users = [];
 // API Routes
 app.get('/api/billboards', (req, res) => {
   res.json(billboards);
+});
+
+app.post('/api/billboards', (req, res) => {
+  const { location, price, impressions, lat, lng, image } = req.body;
+  const newBillboard = {
+    id: billboards.length > 0 ? Math.max(...billboards.map(b => b.id)) + 1 : 1,
+    location,
+    status: "Active",
+    price,
+    impressions,
+    lat,
+    lng,
+    image: image || "/billboard-placeholder.png",
+    lastUpdated: new Date().toISOString()
+  };
+  billboards.push(newBillboard);
+  res.status(201).json(newBillboard);
+});
+
+app.put('/api/billboards/:id', (req, res) => {
+  const { id } = req.params;
+  const index = billboards.findIndex(b => b.id.toString() === id);
+  if (index === -1) return res.status(404).json({ message: "Billboard not found" });
+  
+  billboards[index] = { ...billboards[index], ...req.body, lastUpdated: new Date().toISOString() };
+  res.json(billboards[index]);
+});
+
+app.delete('/api/billboards/:id', (req, res) => {
+  const { id } = req.params;
+  const index = billboards.findIndex(b => b.id.toString() === id);
+  if (index === -1) return res.status(404).json({ message: "Billboard not found" });
+  
+  billboards.splice(index, 1);
+  res.status(204).send();
 });
 
 app.post('/api/ads/upload', (req, res) => {

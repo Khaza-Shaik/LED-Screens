@@ -1,19 +1,18 @@
 import { useState } from 'react';
-import { Upload, DollarSign, Calendar, MapPin, CheckCircle, Zap, File as FileIcon, X } from 'lucide-react';
+import { Upload, DollarSign, Calendar as CalendarIcon, MapPin, CheckCircle, Zap, File as FileIcon, X } from 'lucide-react';
+import PremiumCalendar from '../components/PremiumCalendar';
+import { motion, AnimatePresence } from 'framer-motion';
 
-const TARGET_LOCATIONS = [
-  { name: 'Times Square, NYC', price: 5000, reach: '1.5M', impressions: 1500000 },
-  { name: 'Shibuya Crossing, Tokyo', price: 4200, reach: '2.1M', impressions: 2100000 },
-  { name: 'Piccadilly Circus, London', price: 6100, reach: '1.8M', impressions: 1800000 },
-  { name: 'Burj Khalifa Area, Dubai', price: 8000, reach: '3M', impressions: 3000000 }
-];
+import { TARGET_LOCATIONS } from '../data/inventory';
 
 const LaunchCampaign = () => {
   const [step, setStep] = useState(1);
   const [selectedLocs, setSelectedLocs] = useState<string[]>([]);
   const [startDate, setStartDate] = useState('');
-  const [duration, setDuration] = useState<number | string>(2);
+  const [startTime, setStartTime] = useState('09:00');
+  const [duration] = useState<number | string>(2);
   const [file, setFile] = useState<File | null>(null);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -72,7 +71,7 @@ const LaunchCampaign = () => {
               onClick={() => selectedLocs.length > 0 && setStep(2)} 
               className={`w-full py-4 rounded-xl font-bold flex justify-center items-center gap-2 transition-colors ${selectedLocs.length > 0 ? 'bg-white text-black hover:bg-zinc-200' : 'bg-white/10 text-zinc-500 cursor-not-allowed'}`}
             >
-              Continue to Schedule <Calendar size={18} />
+              Continue to Schedule <CalendarIcon size={18} />
             </button>
           </div>
         )}
@@ -106,14 +105,48 @@ const LaunchCampaign = () => {
               </div>
             )}
 
-            <div className="grid grid-cols-2 gap-4 mb-8">
-               <div className="relative z-20">
-                 <label className="block text-sm text-zinc-400 mb-2">Start Date</label>
-                 <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="w-full bg-black/50 border border-white/10 rounded-xl py-3 px-4 focus:outline-none focus:border-primary text-white cursor-pointer relative z-10" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+               <div className="relative">
+                 <label className="block text-sm text-zinc-400 mb-2 font-bold tracking-wider">Start Date</label>
+                 <button 
+                   onClick={() => setIsCalendarOpen(!isCalendarOpen)}
+                   className="w-full bg-black/50 border border-white/10 rounded-xl py-4 px-6 flex items-center justify-between hover:border-primary transition-all group z-10"
+                 >
+                   <span className={startDate ? "text-white font-bold" : "text-zinc-500"}>
+                     {startDate ? new Date(startDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : "Pick a date"}
+                   </span>
+                   <CalendarIcon className="text-zinc-500 group-hover:text-primary transition-colors" size={20} />
+                 </button>
+
+                 <AnimatePresence>
+                   {isCalendarOpen && (
+                     <motion.div 
+                       initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                       animate={{ opacity: 1, scale: 1, y: 0 }}
+                       exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                       className="absolute top-full left-0 mt-2 z-50 shadow-2xl origin-top-left"
+                     >
+                       <PremiumCalendar 
+                         onDateSelect={(date) => {
+                           setStartDate(date);
+                           setIsCalendarOpen(false);
+                         }}
+                         selectedDate={startDate}
+                       />
+                     </motion.div>
+                   )}
+                 </AnimatePresence>
+                 {isCalendarOpen && <div className="fixed inset-0 z-40" onClick={() => setIsCalendarOpen(false)} />}
                </div>
+               
                <div className="relative z-20">
-                 <label className="block text-sm text-zinc-400 mb-2">Duration (Hours)</label>
-                 <input type="number" min="1" value={duration} onChange={(e) => setDuration(e.target.value === '' ? '' : parseInt(e.target.value))} className="w-full bg-black/50 border border-white/10 rounded-xl py-3 px-4 focus:outline-none focus:border-primary text-white relative z-10" />
+                 <label className="block text-sm text-zinc-400 mb-2 font-bold tracking-wider">Start Time</label>
+                 <input 
+                   type="time" 
+                   value={startTime} 
+                   onChange={(e) => setStartTime(e.target.value)} 
+                   className="w-full bg-black/50 border border-white/10 rounded-xl py-4 px-6 focus:outline-none focus:border-primary text-white relative z-10 [color-scheme:dark]" 
+                 />
                </div>
             </div>
 
@@ -138,12 +171,13 @@ const LaunchCampaign = () => {
             
             <div className="bg-black/30 rounded-2xl p-6 mb-8 border border-white/5">
                <h3 className="text-lg font-bold mb-4 border-b border-white/10 pb-2">Campaign Summary</h3>
-               <div className="space-y-3 text-sm">
-                 <div className="flex justify-between"><span className="text-zinc-400">Locations</span><span className="font-bold text-right max-w-[60%]">{selectedLocs.length > 0 ? selectedLocs.join(', ') : 'None selected'} ({selectedLocs.length}x)</span></div>
-                 <div className="flex justify-between"><span className="text-zinc-400">Duration</span><span className="font-bold">{duration || 1} Hour{(Number(duration) || 1) > 1 ? 's' : ''}</span></div>
-                 <div className="flex justify-between"><span className="text-zinc-400">Start Time</span><span className="font-bold">{startDate || 'Next Available Slot'}</span></div>
-                 <div className="flex justify-between"><span className="text-zinc-400">Est. Impressions</span><span className="font-bold text-primary">{(TARGET_LOCATIONS.filter(l => selectedLocs.includes(l.name)).reduce((sum, l) => sum + l.impressions, 0) * (Number(duration) || 1)).toLocaleString()}+</span></div>
-               </div>
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between"><span className="text-zinc-400">Total Locations</span><span className="font-bold">{selectedLocs.length} Units</span></div>
+                  <div className="flex justify-between"><span className="text-zinc-400">Start Date</span><span className="font-bold">{startDate || 'Not selected'}</span></div>
+                  <div className="flex justify-between"><span className="text-zinc-400">Start Time</span><span className="font-bold">{startTime}</span></div>
+                  <div className="flex justify-between"><span className="text-zinc-400">Duration</span><span className="font-bold">{duration} Hour{(Number(duration) || 1) > 1 ? 's' : ''}</span></div>
+                  <div className="flex justify-between"><span className="text-zinc-400">Est. Impressions</span><span className="font-bold text-primary">{(TARGET_LOCATIONS.filter(l => selectedLocs.includes(l.name)).reduce((sum, l) => sum + l.impressions, 0) * (Number(duration) || 1)).toLocaleString()}+</span></div>
+                </div>
                
                <div className="mt-6 pt-6 border-t border-white/10">
                  <div className="flex justify-between items-end">

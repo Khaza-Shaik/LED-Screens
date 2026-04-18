@@ -3,13 +3,13 @@ import { Check, Sparkles } from 'lucide-react';
 const plans = [
   {
     name: 'Starter',
-    price: '$299',
+    price: '₹24,999',
     duration: '/week',
     features: ['1 city campaign', 'Basic analytics', 'Email support'],
   },
   {
     name: 'Growth',
-    price: '$999',
+    price: '₹79,999',
     duration: '/month',
     features: ['10 city campaigns', 'Live analytics dashboard', 'Priority support'],
   },
@@ -26,7 +26,7 @@ const Pricing = () => {
     <div className="min-h-screen app-bg text-white pt-32 px-6">
       <div className="max-w-7xl mx-auto">
         <header className="mb-12">
-          <h1 className="text-5xl font-black mb-4">Pricing</h1>
+          <h1 className="text-5xl font-black mb-4">Plans</h1>
           <p className="text-zinc-400 text-lg">Flexible plans for campaigns of any size.</p>
         </header>
 
