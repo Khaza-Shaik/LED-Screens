@@ -1,27 +1,30 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { GoogleMap, useJsApiLoader, Marker, HeatmapLayer } from '@react-google-maps/api';
-import { Trash2, Plus, Clock, ShieldCheck, LogOut, Flame, AlertTriangle } from 'lucide-react';
+import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import { Trash2, Plus, Clock, ShieldCheck, LogOut, Flame, AlertTriangle, BarChart3, Globe, Activity } from 'lucide-react';
 
-const libraries: ("places" | "visualization" | "drawing" | "geometry")[] = ["places", "visualization"];
+// Leaflet marker fix
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+const DefaultIcon = L.icon({ iconUrl: icon, shadowUrl: iconShadow, iconSize: [25, 41], iconAnchor: [12, 41] });
+L.Marker.prototype.options.icon = DefaultIcon;
 
-const mapContainerStyle = {
-  width: '100%',
-  height: '100%',
-};
+const customIcon = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+  iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
+});
 
-const defaultCenter = {
-  lat: 20.5937,
-  lng: 78.9629,
-};
+const redIcon = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+  iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
+});
 
-const darkMapStyles = [
-  { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
-  { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
-  { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
-  { featureType: "water", elementType: "geometry", stylers: [{ color: "#17263c" }] },
-];
+const defaultCenter = { lat: 20.5937, lng: 78.9629 };
 
 interface Billboard {
   id: string | number;
@@ -37,58 +40,48 @@ interface Billboard {
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [billboards, setBillboards] = useState<Billboard[]>([]);
-  const [selectedPos, setSelectedPos] = useState<google.maps.LatLngLiteral | null>(null);
+  const [selectedPos, setSelectedPos] = useState<{ lat: number; lng: number } | null>(null);
   const [form, setForm] = useState({ location: '', price: '', impressions: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showHeatmap, setShowHeatmap] = useState(false);
   const [notifications, setNotifications] = useState<any[]>([]);
 
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "",
-    libraries,
-  });
+  // Map Click Handler for Leaflet
+  function LocationMarker() {
+    useMapEvents({
+      click(e) {
+        setSelectedPos({ lat: e.latlng.lat, lng: e.latlng.lng });
+      },
+    });
+    return selectedPos ? <Marker position={[selectedPos.lat, selectedPos.lng]} icon={redIcon} /> : null;
+  }
 
   useEffect(() => {
-    // Basic Auth Check
-    const token = localStorage.getItem('token');
-    if (!token && import.meta.env.PROD) {
-      navigate('/login');
-    }
+    if (!localStorage.getItem('token') && import.meta.env.PROD) navigate('/login');
     fetchBillboards();
-    // Real-time updates via polling (every 10 seconds)
-    const interval = setInterval(fetchBillboards, 10000);
+    const interval = setInterval(fetchBillboards, 15000);
     return () => clearInterval(interval);
   }, [navigate]);
 
   const fetchBillboards = () => {
     fetch('/api/billboards')
-      .then(res => res.json())
+      .then(r => r.json())
       .then(data => {
         setBillboards(data);
-        
-        // Simulate live alerts for premium feel
-        if (data.length > 0 && Math.random() > 0.7) {
-          const randomBoard = data[Math.floor(Math.random() * data.length)];
+        if (data.length > 0 && Math.random() > 0.75) {
+          const rb = data[Math.floor(Math.random() * data.length)];
           setNotifications(prev => [
-            { id: Date.now(), message: `Signal variance detected at ${randomBoard.location}`, type: 'warning' },
-            ...prev
+            { id: Date.now(), message: `Signal variance at ${rb.location}` },
+            ...prev,
           ].slice(0, 3));
         }
       })
-      .catch(err => console.error(err));
-  };
-
-  const onMapClick = (e: google.maps.MapMouseEvent) => {
-    if (e.latLng) {
-      setSelectedPos({ lat: e.latLng.lat(), lng: e.latLng.lng() });
-    }
+      .catch(console.error);
   };
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedPos) return alert("Please click on map to select location");
-    
+    if (!selectedPos) return alert('Click the map to set a location');
     setIsSubmitting(true);
     try {
       const res = await fetch('/api/billboards', {
@@ -96,194 +89,216 @@ const AdminDashboard = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...form, ...selectedPos }),
       });
-      if (res.ok) {
-        fetchBillboards();
-        setForm({ location: '', price: '', impressions: '' });
-        setSelectedPos(null);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsSubmitting(false);
-    }
+      if (res.ok) { fetchBillboards(); setForm({ location: '', price: '', impressions: '' }); setSelectedPos(null); }
+    } catch (e) { console.error(e); } finally { setIsSubmitting(false); }
   };
 
   const handleDelete = async (id: string | number) => {
-    if (!confirm("Delete this board?")) return;
-    try {
-      await fetch(`/api/billboards/${id}`, { method: 'DELETE' });
-      fetchBillboards();
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/login');
+    if (!confirm('Remove this billboard?')) return;
+    await fetch(`/api/billboards/${id}`, { method: 'DELETE' }).catch(console.error);
+    fetchBillboards();
   };
 
   return (
-    <div className="min-h-screen app-bg text-white pt-24 pb-20 px-6">
-      <div className="max-w-7xl mx-auto">
-        <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
-          <div>
-            <h1 className="text-4xl font-black tracking-tighter flex items-center gap-3">
-              <ShieldCheck className="text-primary" size={36} /> Admin <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Command Center</span>
-            </h1>
-            <p className="text-zinc-500 mt-2 font-medium">Manage your global DOOH infrastructure in real-time.</p>
+    <div className="app-bg min-h-screen pt-20">
+      {/* ─── Top Bar ──────────────────────────────── */}
+      <div className="bg-white border-b border-slate-200 px-6 py-4">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
+              <ShieldCheck size={16} className="text-white" />
+            </div>
+            <div>
+              <h1 className="text-base font-bold text-slate-900 leading-tight">Admin Console</h1>
+              <p className="text-xs text-slate-500 font-medium">DOOH Infrastructure Management</p>
+            </div>
           </div>
-          <Link to="/launch-campaign" className="px-8 py-3 bg-white text-black rounded-xl font-bold hover:bg-zinc-200 transition-all flex items-center justify-center gap-2 group shadow-[0_0_20px_rgba(255,255,255,0.2)]">
-            Command Center <Plus size={18} />
-          </Link>
-          <button onClick={handleLogout} className="px-6 py-3 glass rounded-xl flex items-center gap-2 hover:bg-red-500/10 hover:text-red-400 transition-all border border-white/5 font-bold">
-            <LogOut size={18} /> Logout
-          </button>
-        </header>
+          <div className="flex items-center gap-3">
+            <Link
+              to="/launch-campaign"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm font-bold rounded-lg hover:bg-indigo-700 transition-all shadow-sm"
+            >
+              <Plus size={15} /> New Campaign
+            </Link>
+            <button
+              onClick={() => { localStorage.removeItem('token'); navigate('/login'); }}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-white text-slate-600 text-sm font-semibold rounded-lg border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all"
+            >
+              <LogOut size={15} /> Sign out
+            </button>
+          </div>
+        </div>
+      </div>
 
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* ─── Live Alerts ──────────────────────────── */}
         {notifications.length > 0 && (
-          <div className="mb-8 space-y-4">
+          <div className="mb-6 space-y-2">
             {notifications.map(note => (
-              <motion.div 
+              <motion.div
                 key={note.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="p-4 bg-orange-500/10 border border-orange-500/30 rounded-[1.5rem] flex items-center justify-between backdrop-blur-md"
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex items-center justify-between px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl"
               >
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-orange-500/20 rounded-lg text-orange-400">
-                    <AlertTriangle size={18} />
-                  </div>
-                  <p className="text-sm font-bold text-orange-200">{note.message}</p>
+                  <AlertTriangle size={15} className="text-amber-600 shrink-0" />
+                  <p className="text-sm font-semibold text-amber-800">{note.message}</p>
                 </div>
-                <span className="text-[10px] uppercase tracking-widest font-black text-orange-500">Live Alert</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600 bg-amber-100 px-2 py-0.5 rounded-full">
+                  Live
+                </span>
               </motion.div>
             ))}
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Create Form */}
-          <div className="lg:col-span-1 space-y-8">
-            <div className="glass-card rounded-[2rem] p-8 border border-white/10">
-              <h2 className="text-xl font-bold mb-6 flex items-center gap-2"><Plus className="text-primary" size={20} /> Deploy New Board</h2>
-              <form onSubmit={handleCreate} className="space-y-4">
-                <input 
-                  placeholder="Board Name / Location" 
-                  className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-5 focus:outline-none focus:border-primary"
-                  value={form.location}
-                  onChange={e => setForm({...form, location: e.target.value})}
-                  required
-                />
-                <div className="grid grid-cols-2 gap-4">
-                  <input 
-                    placeholder="Price (e.g. ₹5k/hr)" 
-                    className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-4 focus:outline-none focus:border-primary"
-                    value={form.price}
-                    onChange={e => setForm({...form, price: e.target.value})}
-                    required
-                  />
-                  <input 
-                    placeholder="Reach (e.g. 1M)" 
-                    className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-4 focus:outline-none focus:border-primary"
-                    value={form.impressions}
-                    onChange={e => setForm({...form, impressions: e.target.value})}
+        {/* ─── KPI Strip ────────────────────────────── */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          {[
+            { label: 'Total Screens', value: billboards.length, icon: Globe, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+            { label: 'Active Campaigns', value: '—', icon: Activity, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+            { label: 'Avg Uptime', value: '98.4%', icon: BarChart3, color: 'text-sky-600', bg: 'bg-sky-50' },
+            { label: 'Alerts Today', value: notifications.length, icon: AlertTriangle, color: 'text-amber-600', bg: 'bg-amber-50' },
+          ].map(stat => (
+            <div key={stat.label} className="bg-white border border-slate-200 rounded-xl p-5">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-semibold text-slate-500">{stat.label}</span>
+                <div className={`w-7 h-7 ${stat.bg} rounded-lg flex items-center justify-center`}>
+                  <stat.icon size={14} className={stat.color} />
+                </div>
+              </div>
+              <p className="text-2xl font-extrabold tracking-tight text-slate-900">{stat.value}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* ─── Main Grid ────────────────────────────── */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left — Add Form */}
+          <div className="lg:col-span-1 space-y-5">
+            <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+              <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-2">
+                <Plus size={15} className="text-indigo-500" />
+                <h2 className="text-sm font-bold text-slate-900">Provision New Screen</h2>
+              </div>
+              <form onSubmit={handleCreate} className="p-6 space-y-4">
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Board Name / Location</label>
+                  <input
+                    placeholder="e.g. Jubilee Hills, Hyderabad"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium placeholder:text-slate-400 text-slate-900 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:bg-white transition-all"
+                    value={form.location}
+                    onChange={e => setForm({ ...form, location: e.target.value })}
                     required
                   />
                 </div>
-                
-                <div className="p-4 bg-primary/10 rounded-xl border border-primary/20 text-sm">
-                  <p className="text-primary font-bold mb-1">Coordinates:</p>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Rate/hr</label>
+                    <input
+                      placeholder="₹5,000"
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium placeholder:text-slate-400 text-slate-900 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:bg-white transition-all"
+                      value={form.price}
+                      onChange={e => setForm({ ...form, price: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Reach</label>
+                    <input
+                      placeholder="e.g. 1.2M"
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium placeholder:text-slate-400 text-slate-900 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:bg-white transition-all"
+                      value={form.impressions}
+                      onChange={e => setForm({ ...form, impressions: e.target.value })}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className={`p-3.5 rounded-lg border text-sm ${selectedPos ? 'bg-indigo-50 border-indigo-200' : 'bg-slate-50 border-slate-200'}`}>
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Map Coordinates</p>
                   {selectedPos ? (
-                    <p className="font-mono">{selectedPos.lat.toFixed(6)}, {selectedPos.lng.toFixed(6)}</p>
+                    <p className="font-mono text-xs text-slate-700">{selectedPos.lat.toFixed(6)}, {selectedPos.lng.toFixed(6)}</p>
                   ) : (
-                    <p className="text-zinc-400 animate-pulse italic">Click on the map to set location...</p>
+                    <p className="text-xs text-slate-400 italic animate-pulse">Click map to pin location…</p>
                   )}
                 </div>
-
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   disabled={isSubmitting || !selectedPos}
-                  className="w-full py-4 rounded-xl bg-primary text-black font-bold hover:scale-[1.02] active:scale-95 transition-all shadow-[0_0_20px_rgba(0,242,255,0.3)] disabled:opacity-50 disabled:grayscale disabled:scale-100"
+                  className="w-full py-3 bg-indigo-600 text-white text-sm font-bold rounded-lg hover:bg-indigo-700 transition-all shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
                 >
-                  {isSubmitting ? 'Syncing...' : 'Provision Global Asset'}
+                  {isSubmitting ? 'Provisioning…' : 'Add Screen Asset'}
                 </button>
               </form>
             </div>
 
-            <div className="glass-card rounded-[2rem] p-8 border border-white/10 max-h-[400px] overflow-y-auto">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold flex items-center gap-2">Live Inventory</h2>
-                <button 
+            {/* Inventory List */}
+            <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+              <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+                <h2 className="text-sm font-bold text-slate-900">Screen Inventory</h2>
+                <button
                   onClick={() => setShowHeatmap(!showHeatmap)}
-                  className={`p-2 rounded-lg border transition-all ${showHeatmap ? 'bg-orange-500/20 border-orange-500 text-orange-400 shadow-[0_0_15px_rgba(249,115,22,0.3)]' : 'border-white/10 text-zinc-500'}`}
-                  title="Toggle Heatmap"
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${showHeatmap ? 'bg-amber-50 border-amber-200 text-amber-600' : 'bg-slate-50 border-slate-200 text-slate-500 hover:border-slate-300'}`}
                 >
-                  <Flame size={18} />
+                  <Flame size={13} /> Heatmap
                 </button>
               </div>
-              <div className="space-y-4">
-                {billboards.map(bb => (
-                  <div key={bb.id} className="p-4 bg-white/5 rounded-2xl border border-white/5 flex items-center justify-between group">
-                    <div>
-                      <p className="font-bold text-sm">{bb.location}</p>
-                      <p className="text-[10px] text-zinc-500 flex items-center gap-1 mt-1"><Clock size={10} /> {bb.lastUpdated ? new Date(bb.lastUpdated).toLocaleTimeString() : 'Unknown'}</p>
+              <div className="max-h-72 overflow-y-auto custom-scrollbar divide-y divide-slate-100">
+                {billboards.length === 0 ? (
+                  <p className="text-sm text-slate-400 font-medium p-6 text-center">No screens provisioned yet.</p>
+                ) : (
+                  billboards.map(bb => (
+                    <div key={bb.id} className="flex items-center justify-between px-5 py-3.5 hover:bg-slate-50 transition-colors group">
+                      <div>
+                        <p className="text-sm font-semibold text-slate-900">{bb.location}</p>
+                        <p className="flex items-center gap-1.5 text-[10px] text-slate-400 font-medium mt-0.5">
+                          <Clock size={10} />
+                          {bb.lastUpdated ? new Date(bb.lastUpdated).toLocaleTimeString() : 'Unknown'}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => handleDelete(bb.id)}
+                        className="opacity-0 group-hover:opacity-100 p-2 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all border border-transparent hover:border-rose-100"
+                      >
+                        <Trash2 size={15} />
+                      </button>
                     </div>
-                    <button onClick={() => handleDelete(bb.id)} className="p-3 text-zinc-500 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-colors">
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
           </div>
 
-          {/* Map Selector */}
-          <div className="lg:col-span-2 h-[400px] md:h-[600px] rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl relative">
-            {isLoaded ? (
-              <GoogleMap
-                mapContainerStyle={mapContainerStyle}
-                center={defaultCenter}
-                zoom={2}
-                options={{ 
-                  styles: darkMapStyles, 
-                  disableDefaultUI: true, 
-                  zoomControl: true
-                }}
-                onClick={onMapClick}
+          {/* Right — Map */}
+          <div className="lg:col-span-2 bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm" style={{ minHeight: '600px' }}>
+            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+              <h2 className="text-sm font-bold text-slate-900">Global Screen Network</h2>
+              <div className="flex items-center gap-2 text-xs font-bold text-indigo-600">
+                <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
+                Live Geo Feed
+              </div>
+            </div>
+            <div style={{ height: 'calc(100% - 57px)', minHeight: '540px' }} className="isolate">
+              <MapContainer
+                center={[defaultCenter.lat, defaultCenter.lng]}
+                zoom={5}
+                style={{ height: '100%', width: '100%' }}
+                zoomControl={true}
               >
-                {showHeatmap && (
-                  <HeatmapLayer
-                    data={billboards.map(bb => new google.maps.LatLng(bb.lat, bb.lng))}
-                    options={{ radius: 30, opacity: 0.6 }}
-                  />
-                )}
+                <TileLayer
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+                  url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+                />
+                <LocationMarker />
                 {billboards.map(bb => (
                   <Marker 
                     key={bb.id} 
-                    position={{ lat: bb.lat, lng: bb.lng }}
-                    icon={{ url: "https://maps.google.com/mapfiles/ms/icons/green-dot.png" }}
+                    position={[bb.lat, bb.lng]} 
+                    icon={customIcon}
                   />
                 ))}
-                {selectedPos && (
-                  <Marker 
-                    position={selectedPos} 
-                    animation={google.maps.Animation.BOUNCE}
-                    icon={{ url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png" }}
-                  />
-                )}
-              </GoogleMap>
-            ) : (
-              <div className="w-full h-full flex flex-col items-center justify-center bg-black">
-                <div className="w-12 h-12 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-              </div>
-            )}
-            <div className="absolute top-6 left-6 pointer-events-none">
-              <div className="glass p-4 rounded-2xl border border-white/10 backdrop-blur-md">
-                <div className="text-xs font-bold uppercase tracking-widest text-primary flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-primary animate-pulse" /> Precision Geolocator Active
-                </div>
-              </div>
+              </MapContainer>
             </div>
           </div>
         </div>

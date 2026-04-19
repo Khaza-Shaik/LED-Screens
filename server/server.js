@@ -9,10 +9,13 @@ app.use(express.json());
 
 // Mock Data
 const billboards = [
-  { id: 1, location: "Cyber Hub, Gurgaon", status: "Active", price: "₹5,000/hr", impressions: "1.5M", lat: 28.4951, lng: 77.0878 },
-  { id: 2, location: "Bandra-Worli Sea Link, Mumbai", status: "Active", price: "₹4,200/hr", impressions: "2.1M", lat: 19.0371, lng: 72.8174 },
-  { id: 3, location: "Connaught Place, Delhi", status: "High Demand", price: "₹6,100/hr", impressions: "1.8M", lat: 28.6330, lng: 77.2194 },
-  { id: 4, location: "Brigade Road, Bengaluru", status: "Active", price: "₹8,000/hr", impressions: "3M", lat: 12.9734, lng: 77.6061 },
+  { id: 1, location: "Benz Circle, Vijayawada", status: "High Demand", price: "₹4,500/hr", impressions: "1.8M", lat: 16.5015, lng: 80.6438, image: "/vijayawada-billboard.png" },
+  { id: 2, location: "MG Road, Vijayawada", status: "Active", price: "₹3,800/hr", impressions: "1.2M", lat: 16.5135, lng: 80.6395, image: "/vijayawada-billboard.png" },
+  { id: 3, location: "PNBS Area, Vijayawada", status: "Active", price: "₹3,200/hr", impressions: "2.5M", lat: 16.5186, lng: 80.6272, image: "/vijayawada-billboard.png" },
+  { id: 4, location: "Cyber Hub, Gurgaon", status: "Active", price: "₹5,000/hr", impressions: "1.5M", lat: 28.4951, lng: 77.0878 },
+  { id: 5, location: "Bandra-Worli Sea Link, Mumbai", status: "Active", price: "₹4,200/hr", impressions: "2.1M", lat: 19.0371, lng: 72.8174 },
+  { id: 6, location: "Connaught Place, Delhi", status: "High Demand", price: "₹6,100/hr", impressions: "1.8M", lat: 28.6330, lng: 77.2194 },
+  { id: 7, location: "Brigade Road, Bengaluru", status: "Active", price: "₹8,000/hr", impressions: "3M", lat: 12.9734, lng: 77.6061 },
 ];
 
 const ads = [];

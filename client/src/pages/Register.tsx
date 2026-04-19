@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Mail, Lock, UserPlus } from 'lucide-react';
+import { User, Mail, Lock, ArrowRight, Zap, CheckCircle } from 'lucide-react';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -38,83 +38,130 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen app-bg text-white relative flex flex-col items-center justify-center pt-32 pb-20 px-6 overflow-y-auto">
-      {/* Background Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-secondary/20 rounded-full blur-[120px] pointer-events-none" />
-      
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="max-w-[400px] w-full relative z-10"
-      >
-        <div className="glass-card rounded-[2rem] p-8 border border-white/10 shadow-2xl backdrop-blur-xl">
-          <div className="flex flex-col items-center mb-10 text-center">
-            <div className="w-16 h-16 bg-secondary/10 rounded-2xl flex items-center justify-center border border-secondary/20 mb-6 group hover:scale-110 transition-transform duration-500">
-              <UserPlus className="text-secondary group-hover:animate-pulse" size={32} />
+    <div className="min-h-screen bg-slate-50 flex">
+      {/* Left side — branding */}
+      <div className="hidden lg:flex lg:w-1/2 bg-indigo-600 flex-col justify-between p-12 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl opacity-40" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-sky-400 rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl opacity-25" />
+
+        <div className="relative z-10 flex items-center gap-3">
+          <div className="w-9 h-9 bg-white/20 rounded-lg flex items-center justify-center border border-white/30">
+            <Zap size={18} className="text-white fill-white" />
+          </div>
+          <span className="text-white font-bold text-lg tracking-tight">DOOHPlatform</span>
+        </div>
+
+        <div className="relative z-10 space-y-4">
+          <h2 className="text-4xl font-extrabold text-white leading-tight">
+            Launch your first campaign in under 5 minutes.
+          </h2>
+          <ul className="space-y-3 mt-6">
+            {['340+ premium screen locations', 'Real-time impressions tracking', 'Instant campaign activation', 'No setup fees'].map(item => (
+              <li key={item} className="flex items-center gap-3 text-indigo-100 text-sm font-medium">
+                <CheckCircle size={16} className="text-emerald-400 shrink-0" />
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      {/* Right side — form */}
+      <div className="flex-1 flex flex-col justify-center px-8 md:px-16 lg:px-24 py-20">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-sm w-full mx-auto"
+        >
+          <div className="flex items-center gap-2.5 mb-8 lg:hidden">
+            <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
+              <Zap size={16} className="text-white fill-white" />
             </div>
-            <h1 className="text-4xl font-black tracking-tighter mb-2">Create <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Identity</span></h1>
-            <p className="text-zinc-500 font-medium">Join the next generation of DOOH advertising.</p>
+            <span className="font-bold text-slate-900">DOOHPlatform</span>
           </div>
 
-          <form className="space-y-6" onSubmit={onSubmit}>
-            <div className="relative group">
-              <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-primary transition-colors" />
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Full Name"
-                required
-                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 focus:outline-none focus:border-primary transition-all text-white placeholder:text-zinc-600"
-              />
+          <div className="mb-8">
+            <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 mb-2">Create your account</h1>
+            <p className="text-slate-500 font-medium text-sm">Free to start. No credit card required.</p>
+          </div>
+
+          <form className="space-y-4" onSubmit={onSubmit}>
+            <div>
+              <label className="block text-xs font-semibold text-slate-600 mb-1.5">Full name</label>
+              <div className="relative">
+                <User size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Ravi Kumar"
+                  required
+                  className="w-full pl-9 pr-4 py-3 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
+                />
+              </div>
             </div>
-            <div className="relative group">
-              <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-primary transition-colors" />
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Work Email"
-                required
-                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 focus:outline-none focus:border-primary transition-all text-white placeholder:text-zinc-600"
-              />
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-600 mb-1.5">Work email</label>
+              <div className="relative">
+                <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@company.com"
+                  required
+                  className="w-full pl-9 pr-4 py-3 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
+                />
+              </div>
             </div>
-            <div className="relative group">
-              <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-primary transition-colors" />
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Create Password"
-                minLength={6}
-                required
-                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 focus:outline-none focus:border-primary transition-all text-white placeholder:text-zinc-600"
-              />
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-600 mb-1.5">Password</label>
+              <div className="relative">
+                <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Min. 6 characters"
+                  minLength={6}
+                  required
+                  className="w-full pl-9 pr-4 py-3 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all"
+                />
+              </div>
             </div>
 
             {error && (
-              <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm flex items-center gap-2">
-                <span className="w-1 h-1 rounded-full bg-red-400" /> {error}
-              </motion.div>
+              <div className="p-3 bg-rose-50 border border-rose-200 rounded-lg flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
+                <p className="text-xs font-semibold text-rose-700">{error}</p>
+              </div>
             )}
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 rounded-2xl bg-white text-black font-black hover:bg-zinc-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-2 py-3.5 mt-2 bg-indigo-600 text-white text-sm font-bold rounded-lg hover:bg-indigo-700 transition-all shadow-sm hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              {loading ? 'Registering...' : 'Initialize Account'}
+              {loading ? 'Creating account...' : <>Create account <ArrowRight size={15} /></>}
             </button>
+
+            <p className="text-center text-xs text-slate-400 font-medium">
+              By creating an account, you agree to our{' '}
+              <Link to="#" className="text-indigo-600 font-semibold">Terms</Link> and{' '}
+              <Link to="#" className="text-indigo-600 font-semibold">Privacy Policy</Link>.
+            </p>
           </form>
 
-          <p className="text-zinc-500 text-xs font-bold uppercase tracking-widest mt-10 text-center">
-            Member of the network?{' '}
-            <Link to="/login" className="text-secondary hover:text-white transition-colors">
-              Authorize Now
+          <p className="mt-8 text-center text-sm text-slate-500 font-medium">
+            Already have an account?{' '}
+            <Link to="/login" className="text-indigo-600 font-semibold hover:text-indigo-700">
+              Sign in <ArrowRight size={13} className="inline" />
             </Link>
           </p>
-        </div>
-      </motion.div>
+        </motion.div>
+      </div>
     </div>
   );
 };
