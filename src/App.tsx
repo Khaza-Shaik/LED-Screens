@@ -15,12 +15,15 @@ import AdminDashboard from './pages/AdminDashboard';
 
 function AppContent() {
   const location = useLocation();
+  const token = localStorage.getItem('token');
+  
   const isAuthPage = ['/login', '/register', '/forgot-password'].includes(location.pathname);
+  const shouldHideUI = isAuthPage || !token;
 
   return (
     <div className="flex flex-col min-h-screen">
       <ScrollToTop />
-      {!isAuthPage && <Navbar />}
+      {!shouldHideUI && <Navbar />}
       <main className="flex-grow flex flex-col">
         <Routes>
           {/* ── Public routes ─────────────────────── */}
@@ -40,7 +43,7 @@ function AppContent() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
-      {!isAuthPage && <Footer />}
+      {!shouldHideUI && <Footer />}
     </div>
   );
 }

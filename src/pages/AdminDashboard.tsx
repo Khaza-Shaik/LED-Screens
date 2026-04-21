@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Trash2, Plus, Clock, ShieldCheck, LogOut, Flame, AlertTriangle, BarChart3, Globe, Activity } from 'lucide-react';
+import { Trash2, Plus, Clock, ShieldCheck, Flame, AlertTriangle, BarChart3, Globe, Activity } from 'lucide-react';
 
 // Leaflet marker fix
 import icon from 'leaflet/dist/images/marker-icon.png';
