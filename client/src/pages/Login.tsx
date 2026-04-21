@@ -40,7 +40,7 @@ const Login = () => {
   return (
     <div className="flex-1 bg-slate-50 flex items-center justify-center p-6 lg:p-12 overflow-hidden">
       <div className="w-full max-w-7xl h-full max-h-[850px] flex gap-[30px] transition-all duration-500">
-      <div className="hidden lg:flex flex-1 bg-gradient-to-br from-indigo-600 via-indigo-700 to-violet-800 rounded-[30px] flex-col justify-between p-12 relative overflow-hidden shadow-2xl shadow-indigo-200/50">
+      <div className="hidden lg:flex flex-1 bg-gradient-to-br from-indigo-600 via-indigo-700 to-violet-800 rounded-[30px] flex-col p-12 relative overflow-hidden shadow-2xl shadow-indigo-200/50">
         {/* Decorations */}
         <div className="absolute top-0 right-0 w-80 h-80 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-sky-400/20 rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl" />
@@ -52,20 +52,22 @@ const Login = () => {
           <span className="text-white font-bold text-xl tracking-tight">DOOHPlatform</span>
         </div>
 
-        <div className="relative z-10">
-          <h2 className="text-5xl font-black text-white leading-[1.1] mb-6 tracking-tight">
-            India's Most Advanced<br />DOOH Platform
-          </h2>
-          <p className="text-indigo-100 text-xl font-medium leading-relaxed mb-10 max-w-md">
-            Deploy campaigns to 340+ premium screens. Real-time analytics. Instant go-live.
-          </p>
-          <div className="flex items-center gap-5">
-            <div className="flex -space-x-3">
-              {['bg-sky-400', 'bg-emerald-400', 'bg-amber-400', 'bg-rose-400'].map((c, i) => (
-                <div key={i} className={`w-10 h-10 ${c} rounded-full border-2 border-indigo-600 shadow-lg`} />
-              ))}
+        <div className="flex-1 flex flex-col justify-center">
+          <div className="relative z-10">
+            <h2 className="text-5xl font-black text-white leading-[1.1] mb-6 tracking-tight">
+              India's Most Advanced<br />DOOH Platform
+            </h2>
+            <p className="text-indigo-100 text-xl font-medium leading-relaxed mb-10 max-w-md">
+              Deploy campaigns to 340+ premium screens. Real-time analytics. Instant go-live.
+            </p>
+            <div className="flex items-center gap-5">
+              <div className="flex -space-x-3">
+                {['bg-sky-400', 'bg-emerald-400', 'bg-amber-400', 'bg-rose-400'].map((c, i) => (
+                  <div key={i} className={`w-10 h-10 ${c} rounded-full border-2 border-indigo-600 shadow-lg`} />
+                ))}
+              </div>
+              <p className="text-indigo-100 text-sm font-bold tracking-wide">Trusted by 500+ brands across India</p>
             </div>
-            <p className="text-indigo-100 text-sm font-bold tracking-wide">Trusted by 500+ brands across India</p>
           </div>
         </div>
       </div>

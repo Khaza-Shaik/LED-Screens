@@ -40,9 +40,9 @@ const Register = () => {
   return (
     <div className="min-h-screen bg-slate-50 flex">
       {/* Left side — branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-indigo-600 flex-col justify-between p-12 relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 bg-indigo-600 flex-col p-12 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl opacity-40" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-sky-400 rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl opacity-25" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-sky-400/20 rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl opacity-25" />
 
         <div className="relative z-10 flex items-center gap-3">
           <div className="w-9 h-9 bg-white/20 rounded-lg flex items-center justify-center border border-white/30">
@@ -51,18 +51,20 @@ const Register = () => {
           <span className="text-white font-bold text-lg tracking-tight">DOOHPlatform</span>
         </div>
 
-        <div className="relative z-10 space-y-4">
-          <h2 className="text-4xl font-extrabold text-white leading-tight">
-            Launch your first campaign in under 5 minutes.
-          </h2>
-          <ul className="space-y-3 mt-6">
-            {['340+ premium screen locations', 'Real-time impressions tracking', 'Instant campaign activation', 'No setup fees'].map(item => (
-              <li key={item} className="flex items-center gap-3 text-indigo-100 text-sm font-medium">
-                <CheckCircle size={16} className="text-emerald-400 shrink-0" />
-                {item}
-              </li>
-            ))}
-          </ul>
+        <div className="flex-1 flex flex-col justify-center">
+          <div className="relative z-10 space-y-4">
+            <h2 className="text-4xl font-extrabold text-white leading-tight">
+              Launch your first campaign in under 5 minutes.
+            </h2>
+            <ul className="space-y-3 mt-6">
+              {['340+ premium screen locations', 'Real-time impressions tracking', 'Instant campaign activation', 'No setup fees'].map(item => (
+                <li key={item} className="flex items-center gap-3 text-indigo-100 text-sm font-medium">
+                  <CheckCircle size={16} className="text-emerald-400 shrink-0" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
 
