@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Zap, Menu, X } from 'lucide-react';
 
 const navLinks = [
@@ -12,6 +12,8 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -72,18 +74,28 @@ const Navbar = () => {
 
           {/* Desktop CTAs */}
           <div className="hidden md:flex items-center gap-3">
-            <Link
-              to="/login"
-              className="px-4 py-2 text-sm font-semibold text-slate-700 hover:text-slate-900 transition-colors"
-            >
-              {localStorage.getItem('token') ? 'Dashboard' : 'Sign in'}
-            </Link>
+            {!token ? (
+              <Link
+                to="/login"
+                className="px-4 py-2 text-sm font-semibold text-slate-700 hover:text-slate-900 transition-colors"
+              >
+                Sign in
+              </Link>
+            ) : null}
             <Link
               to="/launch-campaign"
               className="px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 transition-all shadow-sm hover:shadow-md"
             >
               Launch Campaign
             </Link>
+            {token && (
+              <button
+                onClick={() => { localStorage.removeItem('token'); navigate('/login'); }}
+                className="px-4 py-2 bg-white text-slate-700 border border-slate-200 text-sm font-semibold rounded-lg hover:bg-slate-50 transition-all shadow-sm"
+              >
+                Sign out
+              </button>
+            )}
           </div>
 
           {/* Mobile Toggle */}
@@ -115,12 +127,19 @@ const Navbar = () => {
               ))}
             </nav>
             <div className="flex flex-col gap-3">
-              <Link to="/login" className="block text-center py-3 rounded-lg border border-slate-200 text-sm font-semibold text-slate-700">
-                Sign in
-              </Link>
+              {!token ? (
+                <Link to="/login" className="block text-center py-3 rounded-lg border border-slate-200 text-sm font-semibold text-slate-700">
+                  Sign in
+                </Link>
+              ) : null}
               <Link to="/launch-campaign" className="block text-center py-3 rounded-lg bg-indigo-600 text-white text-sm font-semibold">
                 Launch Campaign
               </Link>
+              {token && (
+                <button onClick={() => { localStorage.removeItem('token'); navigate('/login'); }} className="block w-full text-center py-3 rounded-lg border border-slate-200 text-sm font-semibold text-slate-700 bg-white shadow-sm">
+                  Sign out
+                </button>
+              )}
             </div>
           </div>
         </div>

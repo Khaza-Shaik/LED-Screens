@@ -120,12 +120,6 @@ const AdminDashboard = () => {
             >
               <Plus size={15} /> New Campaign
             </Link>
-            <button
-              onClick={() => { localStorage.removeItem('token'); navigate('/login'); }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-white text-slate-600 text-sm font-semibold rounded-lg border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all"
-            >
-              <LogOut size={15} /> Sign out
-            </button>
           </div>
         </div>
       </div>
