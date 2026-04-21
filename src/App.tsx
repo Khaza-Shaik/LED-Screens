@@ -10,11 +10,12 @@ import Pricing from './pages/Pricing';
 import Analytics from './pages/Analytics';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
 import AdminDashboard from './pages/AdminDashboard';
 
 function AppContent() {
   const location = useLocation();
-  const isAuthPage = ['/login', '/register'].includes(location.pathname);
+  const isAuthPage = ['/login', '/register', '/forgot-password'].includes(location.pathname);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -25,6 +26,7 @@ function AppContent() {
           {/* ── Public routes ─────────────────────── */}
           <Route path="/login"    element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
 
           {/* ── Protected routes ──────────────────── */}
           <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
