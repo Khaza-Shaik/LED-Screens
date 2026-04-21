@@ -20,7 +20,7 @@ const Register = () => {
     try {
       // Bypassing the backend as requested
       localStorage.setItem('token', 'mock-token-12345');
-      navigate('/admin', { replace: true });
+      navigate('/', { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Registration failed');
     } finally {
