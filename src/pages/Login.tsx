@@ -1,13 +1,11 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Shield, Mail, Lock, ArrowRight, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const Login = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const from = (location.state as { from?: { pathname: string } })?.from?.pathname || '/';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
