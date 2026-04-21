@@ -99,10 +99,7 @@ const Login = () => {
             </div>
 
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <label className="block text-xs font-bold uppercase tracking-widest text-slate-400">Password</label>
-                <Link to="/forgot-password" className="text-xs font-bold text-indigo-600 hover:text-indigo-700 tracking-wide">Forgot password?</Link>
-              </div>
+              <label className="block text-xs font-bold uppercase tracking-widest text-slate-400">Password</label>
               <div className="relative">
                 <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
@@ -113,6 +110,9 @@ const Login = () => {
                   required
                   className="w-full pl-11 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50/50 focus:bg-white transition-all"
                 />
+              </div>
+              <div className="flex justify-end mt-1">
+                <Link to="/forgot-password" className="text-[13px] font-bold text-indigo-600 hover:text-indigo-700 tracking-wide">Forgot your password?</Link>
               </div>
             </div>
 
