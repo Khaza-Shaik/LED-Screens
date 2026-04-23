@@ -46,6 +46,15 @@ const AdminDashboard = () => {
   const [showHeatmap, setShowHeatmap] = useState(false);
   const [notifications, setNotifications] = useState<any[]>([]);
 
+  function MapResizeHandler() {
+    const map = useMapEvents({});
+    useEffect(() => {
+      const timer = setTimeout(() => map.invalidateSize(), 100);
+      return () => clearTimeout(timer);
+    }, [map]);
+    return null;
+  }
+
   // Map Click Handler for Leaflet
   function LocationMarker() {
     useMapEvents({
@@ -148,7 +157,7 @@ const AdminDashboard = () => {
         )}
 
         {/* ─── KPI Strip ────────────────────────────── */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {[
             { label: 'Total Screens', value: billboards.length, icon: Globe, color: 'text-indigo-600', bg: 'bg-indigo-50' },
             { label: 'Active Campaigns', value: '—', icon: Activity, color: 'text-emerald-600', bg: 'bg-emerald-50' },
@@ -170,7 +179,7 @@ const AdminDashboard = () => {
         {/* ─── Main Grid ────────────────────────────── */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left — Add Form */}
-          <div className="lg:col-span-1 space-y-5">
+          <div className="lg:col-span-1 space-y-5 order-2 lg:order-1">
             <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
               <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-2">
                 <Plus size={15} className="text-indigo-500" />
@@ -265,7 +274,7 @@ const AdminDashboard = () => {
           </div>
 
           {/* Right — Map */}
-          <div className="lg:col-span-2 bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm" style={{ minHeight: '600px' }}>
+          <div className="lg:col-span-2 bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm h-[400px] lg:h-auto order-1 lg:order-2">
             <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
               <h2 className="text-sm font-bold text-slate-900">Global Screen Network</h2>
               <div className="flex items-center gap-2 text-xs font-bold text-indigo-600">
@@ -284,6 +293,7 @@ const AdminDashboard = () => {
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
                   url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
                 />
+                <MapResizeHandler />
                 <LocationMarker />
                 {billboards.map(bb => (
                   <Marker 

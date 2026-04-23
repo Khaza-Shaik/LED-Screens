@@ -23,6 +23,12 @@ import { FALLBACK_BILLBOARDS, DEFAULT_MAP_CENTER, type Billboard } from '../data
 function MapViewHandler({ center, zoom }: { center: { lat: number; lng: number }; zoom: number }) {
   const map = useMap();
   useEffect(() => { map.setView([center.lat, center.lng], zoom); }, [center, zoom, map]);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      map.invalidateSize();
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [map]);
   return null;
 }
 
@@ -103,10 +109,10 @@ const Locations = () => {
       </div>
 
       {/* ─── Split-Screen Layout ────────────────────── */}
-      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-0" style={{ minHeight: 'calc(100vh - 140px)' }}>
+      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-0 overflow-hidden" style={{ height: 'calc(100vh - 140px)' }}>
 
         {/* Left: Scrollable directory */}
-        <div className="w-full lg:w-[400px] shrink-0 border-r border-slate-200 bg-white overflow-y-auto custom-scrollbar" style={{ maxHeight: 'calc(100vh - 140px)' }}>
+        <div className="w-full lg:w-[400px] h-[40%] lg:h-full shrink-0 border-r border-slate-200 bg-white overflow-y-auto custom-scrollbar order-2 lg:order-1">
           {loading ? (
             <div className="flex flex-col items-center justify-center h-64 gap-3">
               <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
@@ -174,11 +180,11 @@ const Locations = () => {
         </div>
 
         {/* Right: Map */}
-        <div className="flex-1 relative bg-slate-100" style={{ minHeight: '500px' }}>
+        <div className="flex-1 relative bg-slate-100 h-[60%] lg:h-full order-1 lg:order-2">
           <MapContainer
             center={[mapCenter.lat, mapCenter.lng]}
             zoom={mapZoom}
-            style={{ height: '100%', width: '100%', minHeight: '500px' }}
+            style={{ height: '100%', width: '100%' }}
             zoomControl={true}
           >
             <TileLayer
