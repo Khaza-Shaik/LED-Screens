@@ -21,11 +21,11 @@ const Login = () => {
       if (email === 'admin@jaan.com' && password === 'adminjaan123') {
         localStorage.setItem('token', 'mock-admin-token');
         localStorage.setItem('userRole', 'admin');
-        navigate('/admin', { replace: true });
+        navigate('/', { replace: true });
       } else if (email === 'user@jaan.com' && password === 'userjaan123') {
         localStorage.setItem('token', 'mock-user-token');
         localStorage.setItem('userRole', 'user');
-        navigate('/my-bookings', { replace: true });
+        navigate('/', { replace: true });
       } else {
         throw new Error('Invalid email or password. Please use the provided temporary credentials.');
       }
