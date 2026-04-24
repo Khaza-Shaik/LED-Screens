@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Upload, Calendar as CalendarIcon, MapPin, CheckCircle, ArrowRight, File as FileIcon, Clock, ChevronLeft, CreditCard, Zap } from 'lucide-react';
+import { Upload, Calendar as CalendarIcon, MapPin, CheckCircle, ArrowRight, File as FileIcon, Clock, ChevronLeft, CreditCard, Zap, X } from 'lucide-react';
 import PremiumCalendar from '../components/PremiumCalendar';
 import PremiumTimePicker from '../components/PremiumTimePicker';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -61,8 +61,11 @@ const LaunchCampaign = () => {
 
         {/* ─── Page Header ───────────────────────────── */}
         <div className="pt-8 pb-10">
-          <p className="text-xs font-bold tracking-widest uppercase text-indigo-500 mb-2">Campaign Builder</p>
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">Launch New Campaign</h1>
+          <p className="text-xs font-bold tracking-widest uppercase text-indigo-500 mb-3">Instant Booking</p>
+          <h1 className="text-4xl md:text-5xl font-black tracking-tight text-slate-900 leading-tight">
+            Book your <span className="text-indigo-600">slot</span>
+          </h1>
+          <p className="text-slate-500 font-medium mt-3 text-lg">Secure your screen time in seconds.</p>
         </div>
 
         {/* ─── Stepper ───────────────────────────────── */}
@@ -221,7 +224,14 @@ const LaunchCampaign = () => {
                         <AnimatePresence>
                           {isEndCalendarOpen && (
                             <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="absolute top-full left-0 mt-2 z-[60] shadow-xl origin-top-left">
-                              <PremiumCalendar onDateSelect={d => { setEndDate(d); setIsEndCalendarOpen(false); }} selectedDate={endDate} />
+                              <PremiumCalendar 
+                                onDateSelect={d => { 
+                                  setEndDate(d); 
+                                  setIsEndCalendarOpen(false); 
+                                }} 
+                                selectedDate={endDate} 
+                                minDate={startDate} 
+                              />
                             </motion.div>
                           )}
                         </AnimatePresence>
@@ -295,12 +305,25 @@ const LaunchCampaign = () => {
                       {selectedLocs.map(name => {
                         const loc = TARGET_LOCATIONS.find(l => l.name === name)!;
                         return (
-                          <div key={name} className="flex items-center justify-between py-2.5 px-4 bg-slate-50 border border-slate-200 rounded-lg">
+                          <div key={name} className="flex items-center justify-between py-2.5 px-4 bg-slate-50 border border-slate-200 rounded-lg group">
                             <div className="flex items-center gap-2.5">
                               <MapPin size={13} className="text-indigo-500 shrink-0" />
                               <span className="text-sm font-semibold text-slate-800">{name}</span>
                             </div>
-                            <span className="text-xs font-bold text-slate-600">₹{loc.price}/hr</span>
+                            <div className="flex items-center gap-3">
+                              <span className="text-xs font-bold text-slate-600">₹{loc.price}/hr</span>
+                              <button 
+                                onClick={() => {
+                                  const newLocs = selectedLocs.filter(l => l !== name);
+                                  setSelectedLocs(newLocs);
+                                  if (newLocs.length === 0) setStep(1);
+                                }}
+                                className="p-1 hover:bg-rose-50 hover:text-rose-600 rounded text-slate-400 transition-colors"
+                                title="Remove screen"
+                              >
+                                <X size={14} />
+                              </button>
+                            </div>
                           </div>
                         );
                       })}

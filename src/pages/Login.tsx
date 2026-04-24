@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Shield, Mail, Lock, ArrowRight, Zap } from 'lucide-react';
+import { Shield, Mail, Lock, ArrowRight, Play } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const Login = () => {
@@ -17,9 +17,18 @@ const Login = () => {
     setError('');
 
     try {
-      // Bypassing the backend as requested
-      localStorage.setItem('token', 'mock-token-12345');
-      navigate('/', { replace: true });
+      // Temporary hardcoded credentials for Jaan Entertainment
+      if (email === 'admin@jaan.com' && password === 'adminjaan123') {
+        localStorage.setItem('token', 'mock-admin-token');
+        localStorage.setItem('userRole', 'admin');
+        navigate('/admin', { replace: true });
+      } else if (email === 'user@jaan.com' && password === 'userjaan123') {
+        localStorage.setItem('token', 'mock-user-token');
+        localStorage.setItem('userRole', 'user');
+        navigate('/my-bookings', { replace: true });
+      } else {
+        throw new Error('Invalid email or password. Please use the provided temporary credentials.');
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed');
     } finally {
@@ -35,17 +44,14 @@ const Login = () => {
         <div className="absolute top-0 right-0 w-80 h-80 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-sky-400/20 rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl" />
 
-        <div className="relative z-10 flex items-center gap-3">
-          <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center border border-white/30 backdrop-blur-md">
-            <Zap size={20} className="text-white fill-white" />
-          </div>
-          <span className="text-white font-bold text-xl tracking-tight">DOOHPlatform</span>
+        <div className="relative z-10 flex items-center">
+          <span className="text-white font-black text-2xl tracking-tighter">JAAN ENTERTAINMENT</span>
         </div>
 
         <div className="flex-1 flex flex-col justify-center">
           <div className="relative z-10">
             <h2 className="text-5xl font-black text-white leading-[1.1] mb-6 tracking-tight">
-              India's Most Advanced<br />DOOH Platform
+              India's Premiere<br />Entertainment Ad-Network
             </h2>
             <p className="text-indigo-100 text-xl font-medium leading-relaxed mb-10 max-w-md">
               Deploy campaigns to 340+ premium screens. Real-time analytics. Instant go-live.
@@ -70,11 +76,8 @@ const Login = () => {
           className="max-w-md w-full mx-auto"
         >
           {/* Mobile logo */}
-          <div className="flex items-center gap-2.5 mb-10 lg:hidden">
-            <div className="w-9 h-9 bg-indigo-600 rounded-lg flex items-center justify-center">
-              <Zap size={18} className="text-white fill-white" />
-            </div>
-            <span className="font-extrabold text-slate-900 text-xl">DOOHPlatform</span>
+          <div className="flex items-center mb-10 lg:hidden text-center justify-center">
+            <span className="font-black text-slate-900 text-2xl tracking-tighter">JAAN ENTERTAINMENT</span>
           </div>
 
           <div className="mb-10">
@@ -132,7 +135,23 @@ const Login = () => {
             </button>
           </form>
 
-          <div className="mt-12 pt-8 border-t border-slate-100 text-center">
+          <div className="mt-10 p-5 bg-slate-50 border border-slate-100 rounded-2xl">
+            <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-3 text-center">Temporary Demo Access</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-tight">Admin Account</p>
+                <p className="text-xs font-black text-slate-900">admin@jaan.com</p>
+                <p className="text-[10px] text-slate-400 font-bold">PW: adminjaan123</p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-tight">User Account</p>
+                <p className="text-xs font-black text-slate-900">user@jaan.com</p>
+                <p className="text-[10px] text-slate-400 font-bold">PW: userjaan123</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8 pt-8 border-t border-slate-100 text-center">
             <p className="text-sm text-slate-500 font-bold">
               Don't have an account?{' '}
               <Link to="/register" className="text-indigo-600 font-black hover:text-indigo-700 underline underline-offset-4 decoration-2">

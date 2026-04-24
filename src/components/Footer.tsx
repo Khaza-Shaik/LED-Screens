@@ -1,12 +1,12 @@
 import { Link } from 'react-router-dom';
-import { Zap } from 'lucide-react';
+import { Play } from 'lucide-react';
 
 const footerLinks = {
   Platform: [
     { label: 'Locations', to: '/locations' },
     { label: 'Plans', to: '/pricing' },
     { label: 'Analytics', to: '/analytics' },
-    { label: 'Launch Campaign', to: '/launch-campaign' },
+    { label: 'Book your slot', to: '/launch-campaign' },
   ],
   Resources: [
     { label: 'Documentation', to: '#' },
@@ -30,16 +30,13 @@ const Footer = () => {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-10 mb-14">
           {/* Brand */}
           <div className="col-span-2 md:col-span-2">
-            <Link to="/" className="inline-flex items-center gap-2.5 mb-5 group">
-              <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center group-hover:bg-indigo-700 transition-colors shadow-sm">
-                <Zap size={16} className="text-white fill-white" />
-              </div>
-              <span className="text-[15px] font-bold tracking-tight text-slate-900 group-hover:text-indigo-600 transition-colors">
-                DOOH<span className="text-indigo-600">Platform</span>
+            <Link to="/" className="inline-flex items-center mb-5 group">
+              <span className="text-[18px] font-black tracking-tight text-slate-900 group-hover:text-indigo-600 transition-colors">
+                JAAN<span className="text-indigo-600 font-bold ml-0.5">ENTERTAINMENT</span>
               </span>
             </Link>
             <p className="text-sm text-slate-500 font-medium leading-relaxed mb-6 max-w-xs">
-              The premier programmatic platform for digital out-of-home advertising. Reach millions across India's most iconic screens.
+              The premiere entertainment ad-network and programmatic platform for digital out-of-home advertising. Reach millions across India's most iconic screens.
             </p>
             <div className="flex items-center gap-3">
               <a href="#" aria-label="Twitter" className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 transition-all border border-slate-200 hover:border-indigo-200">
@@ -77,7 +74,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-xs text-slate-400 font-medium">
-            © {new Date().getFullYear()} DOOH Platform. All rights reserved.
+            © {new Date().getFullYear()} Jaan Entertainment. All rights reserved.
           </p>
           <div className="flex items-center gap-2 text-xs font-semibold text-emerald-600">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />

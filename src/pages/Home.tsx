@@ -77,7 +77,7 @@ const Home = () => {
               className="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-50 border border-indigo-100 rounded-full mb-8"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
-              <span className="text-xs font-semibold text-indigo-700 tracking-wide">India's #1 Programmatic DOOH Platform</span>
+              <span className="text-xs font-semibold text-indigo-700 tracking-wide">India's #1 Entertainment Ad-Network</span>
             </motion.div>
 
             {/* H1 */}
@@ -99,7 +99,7 @@ const Home = () => {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="text-xl text-slate-500 font-medium max-w-2xl mb-10 leading-relaxed"
             >
-              Deploy, manage, and optimize digital billboard campaigns across India's premium outdoor inventory — in real-time, from a single platform.
+              Deploy, manage, and optimize digital billboard campaigns across India's premium outdoor inventory — in real-time, from the Jaan Entertainment dashboard.
             </motion.p>
 
             {/* CTAs */}
@@ -111,9 +111,9 @@ const Home = () => {
             >
               <Link
                 to="/launch-campaign"
-                className="inline-flex items-center gap-2 px-6 py-3.5 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-all shadow-[0_4px_14px_0_rgba(79,70,229,0.35)] hover:shadow-[0_6px_20px_0_rgba(79,70,229,0.45)] hover:-translate-y-0.5 active:translate-y-0"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-indigo-600 text-white font-bold rounded-2xl hover:bg-indigo-700 transition-all shadow-[0_4px_20px_0_rgba(79,70,229,0.35)] hover:shadow-[0_8px_30px_0_rgba(79,70,229,0.45)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
               >
-                Launch a Campaign <ArrowRight size={18} />
+                Book your slot <ArrowRight size={20} />
               </Link>
               <Link
                 to="/locations"
@@ -228,14 +228,14 @@ const Home = () => {
 
             <div className="relative z-10 max-w-xl">
               <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-white mb-4">Ready to launch your first campaign?</h2>
-              <p className="text-indigo-200 text-lg font-medium">Join 500+ brands already running on India's most advanced DOOH platform.</p>
+              <p className="text-indigo-200 text-lg font-medium">Join 500+ brands already running on India's most advanced entertainment ad-network.</p>
             </div>
             <div className="relative z-10 flex flex-col sm:flex-row gap-4 shrink-0">
               <Link
                 to="/launch-campaign"
-                className="inline-flex items-center justify-center gap-2 px-7 py-4 bg-white text-indigo-600 font-bold rounded-xl hover:bg-indigo-50 transition-all shadow-lg hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-indigo-600 font-bold rounded-2xl hover:bg-indigo-50 transition-all shadow-xl hover:-translate-y-0.5 active:scale-[0.98]"
               >
-                Get Started <ArrowRight size={18} />
+                Book your slot <ArrowRight size={20} />
               </Link>
               <Link
                 to="/pricing"

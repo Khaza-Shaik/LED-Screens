@@ -119,15 +119,15 @@ const AdminDashboard = () => {
             </div>
             <div>
               <h1 className="text-base font-bold text-slate-900 leading-tight">Admin Console</h1>
-              <p className="text-xs text-slate-500 font-medium">DOOH Infrastructure Management</p>
+              <p className="text-xs text-slate-500 font-medium">Entertainment Ad-Network Management</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <Link
               to="/launch-campaign"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm font-bold rounded-lg hover:bg-indigo-700 transition-all shadow-sm"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white text-sm font-bold rounded-xl hover:bg-indigo-700 transition-all shadow-sm active:scale-[0.98]"
             >
-              <Plus size={15} /> New Campaign
+              <Plus size={16} /> Book your slot
             </Link>
           </div>
         </div>

@@ -4,15 +4,22 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 interface PremiumCalendarProps {
   onDateSelect?: (date: string) => void;
   selectedDate?: string;
+  minDate?: string;
 }
 
-const PremiumCalendar: React.FC<PremiumCalendarProps> = ({ onDateSelect, selectedDate }) => {
+const PremiumCalendar: React.FC<PremiumCalendarProps> = ({ onDateSelect, selectedDate, minDate }) => {
   const [viewDate, setViewDate] = React.useState(() => {
     if (selectedDate && !isNaN(new Date(selectedDate).getTime())) {
       return new Date(selectedDate);
     }
     return new Date();
   });
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const effectiveMinDate = minDate ? new Date(minDate) : today;
+  effectiveMinDate.setHours(0, 0, 0, 0);
 
   const getDaysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate();
   const getFirstDayOfMonth = (year: number, month: number) => new Date(year, month, 1).getDay();
@@ -47,6 +54,8 @@ const PremiumCalendar: React.FC<PremiumCalendarProps> = ({ onDateSelect, selecte
     days.push({ day: i, month: currentMonth + 1, year: currentYear, current: false });
   }
 
+
+
   return (
     <div className="w-[300px] bg-white rounded-2xl p-5 shadow-2xl border border-slate-100 text-slate-800 ring-1 ring-slate-900/5">
       <div className="flex items-center justify-between mb-5 px-1">
@@ -69,15 +78,20 @@ const PremiumCalendar: React.FC<PremiumCalendarProps> = ({ onDateSelect, selecte
         {days.map((d, i) => {
           const dateStr = `${d.year}-${String(d.month + 1).padStart(2, '0')}-${String(d.day).padStart(2, '0')}`;
           const isSelected = selectedDate === dateStr;
+          const checkDate = new Date(d.year, d.month, d.day);
+          const isBeforeMin = checkDate < effectiveMinDate;
+          const disabled = !d.current || isBeforeMin;
+
           return (
             <button
               key={i}
-              onClick={() => handleDateClick(d)}
+              onClick={() => !disabled && handleDateClick(d)}
+              disabled={disabled}
               className={`h-9 w-9 mx-auto rounded-lg text-sm font-semibold flex items-center justify-center transition-all ${
                 isSelected 
                   ? 'bg-slate-900 text-white shadow-sm' 
-                  : !d.current 
-                    ? 'text-slate-300 pointer-events-none' 
+                  : disabled 
+                    ? 'text-slate-200 cursor-not-allowed' 
                     : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
               }`}
             >

@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Zap, Menu, X } from 'lucide-react';
+import { Zap, Menu, X, Play } from 'lucide-react';
 
 const navLinks = [
   { label: 'Locations', to: '/locations' },
   { label: 'Plans', to: '/pricing' },
   { label: 'Analytics', to: '/analytics' },
+  { label: 'My Bookings', to: '/my-bookings' },
 ];
 
 const Navbar = () => {
@@ -14,6 +15,7 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
+  const userRole = localStorage.getItem('userRole');
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -36,12 +38,9 @@ const Navbar = () => {
       >
         <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center group-hover:bg-indigo-700 transition-colors shadow-sm">
-              <Zap size={16} className="text-white fill-white" />
-            </div>
-            <span className="text-[15px] font-bold tracking-tight text-slate-900 group-hover:text-indigo-600 transition-colors">
-              DOOH<span className="text-indigo-600">Platform</span>
+          <Link to="/" className="flex items-center group">
+            <span className="text-[18px] font-black tracking-tight text-slate-900 group-hover:text-indigo-600 transition-colors">
+              JAAN<span className="text-indigo-600 font-bold ml-0.5">ENTERTAINMENT</span>
             </span>
           </Link>
 
@@ -60,7 +59,7 @@ const Navbar = () => {
                 {link.label}
               </Link>
             ))}
-            {localStorage.getItem('token') && (
+            {userRole === 'admin' && (
               <Link
                 to="/admin"
                 className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
@@ -84,9 +83,9 @@ const Navbar = () => {
             ) : null}
             <Link
               to="/launch-campaign"
-              className="px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 transition-all shadow-sm hover:shadow-md"
+              className="px-5 py-2.5 bg-indigo-600 text-white text-sm font-bold rounded-xl hover:bg-indigo-700 transition-all shadow-sm hover:shadow-md active:scale-[0.98]"
             >
-              Launch Campaign
+              Book your slot
             </Link>
             {token && (
               <button
@@ -125,6 +124,16 @@ const Navbar = () => {
                   {link.label}
                 </Link>
               ))}
+              {userRole === 'admin' && (
+                <Link
+                  to="/admin"
+                  className={`px-4 py-3 rounded-lg text-sm font-semibold transition-all ${
+                    isActive('/admin') ? 'text-indigo-600 bg-indigo-50' : 'text-slate-700 hover:bg-slate-50'
+                  }`}
+                >
+                  Admin
+                </Link>
+              )}
             </nav>
             <div className="flex flex-col gap-3">
               {!token ? (
@@ -132,8 +141,8 @@ const Navbar = () => {
                   Sign in
                 </Link>
               ) : null}
-              <Link to="/launch-campaign" className="block text-center py-3 rounded-lg bg-indigo-600 text-white text-sm font-semibold">
-                Launch Campaign
+              <Link to="/launch-campaign" className="block text-center py-4 rounded-xl bg-indigo-600 text-white text-sm font-bold active:scale-[0.98] transition-transform">
+                Book your slot
               </Link>
               {token && (
                 <button onClick={() => { localStorage.removeItem('token'); navigate('/login'); }} className="block w-full text-center py-3 rounded-lg border border-slate-200 text-sm font-semibold text-slate-700 bg-white shadow-sm">

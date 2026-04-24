@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Mail, Lock, ArrowRight, Zap, CheckCircle } from 'lucide-react';
+import { User, Mail, Lock, ArrowRight, Play, CheckCircle } from 'lucide-react';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -35,11 +35,8 @@ const Register = () => {
         <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl opacity-40" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-sky-400/20 rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl opacity-25" />
 
-        <div className="relative z-10 flex items-center gap-3">
-          <div className="w-9 h-9 bg-white/20 rounded-lg flex items-center justify-center border border-white/30">
-            <Zap size={18} className="text-white fill-white" />
-          </div>
-          <span className="text-white font-bold text-lg tracking-tight">DOOHPlatform</span>
+        <div className="relative z-10 flex items-center">
+          <span className="text-white font-black text-xl tracking-tighter">JAAN ENTERTAINMENT</span>
         </div>
 
         <div className="flex-1 flex flex-col justify-center">
@@ -66,11 +63,8 @@ const Register = () => {
           animate={{ opacity: 1, y: 0 }}
           className="max-w-sm w-full mx-auto"
         >
-          <div className="flex items-center gap-2.5 mb-8 lg:hidden">
-            <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
-              <Zap size={16} className="text-white fill-white" />
-            </div>
-            <span className="font-bold text-slate-900">DOOHPlatform</span>
+          <div className="flex items-center mb-8 lg:hidden justify-center text-center">
+            <span className="font-black text-slate-900 text-xl tracking-tighter">JAAN ENTERTAINMENT</span>
           </div>
 
           <div className="mb-8">

@@ -13,6 +13,7 @@ import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import AdminDashboard from './pages/AdminDashboard';
 import ApiDocs from './pages/ApiDocs';
+import MyBookings from './pages/MyBookings';
 
 
 function AppContent() {
@@ -41,6 +42,7 @@ function AppContent() {
           <Route path="/launch-campaign" element={<ProtectedRoute><LaunchCampaign /></ProtectedRoute>} />
           <Route path="/pricing" element={<ProtectedRoute><Pricing /></ProtectedRoute>} />
           <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
+          <Route path="/my-bookings" element={<ProtectedRoute><MyBookings /></ProtectedRoute>} />
           <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
 
           {/* ── Fallback ──────────────────────────── */}

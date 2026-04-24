@@ -28,7 +28,7 @@ const plans = [
     badge: null,
     price: 'Custom',
     duration: '',
-    desc: 'Unlimited scale with a dedicated DOOH media team.',
+    desc: 'Unlimited scale with a dedicated Jaan Entertainment media team.',
     features: ['Pan-India coverage', 'Unlimited screens', 'Advanced attribution & API', 'Dedicated account manager', 'Custom SLA', 'Quarterly business reviews'],
     cta: 'Talk to Sales',
     highlight: false,

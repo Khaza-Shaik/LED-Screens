@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, ArrowRight, Zap, CheckCircle } from 'lucide-react';
+import { Mail, ArrowRight, Play, CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const ForgotPassword = () => {
@@ -31,11 +31,8 @@ const ForgotPassword = () => {
         animate={{ opacity: 1, y: 0 }}
         className="sm:mx-auto sm:w-full sm:max-w-md relative z-10"
       >
-        <div className="flex items-center justify-center gap-3 mb-8">
-          <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200">
-            <Zap size={20} className="text-white fill-white" />
-          </div>
-          <span className="font-black text-slate-900 text-2xl tracking-tight">DOOHPlatform</span>
+        <div className="flex items-center justify-center mb-8">
+          <span className="font-black text-slate-900 text-2xl tracking-tighter">JAAN ENTERTAINMENT</span>
         </div>
 
         <div className="bg-white py-10 px-6 shadow-xl shadow-slate-200/50 rounded-[24px] sm:px-10 border border-slate-100">
