@@ -31,8 +31,13 @@ const startBackend = async () => {
   try {
     let uri = process.env.MONGODB_URI;
     
-    // Auto-provision database if no real URI is found
-    if (!uri || uri.includes('localhost')) {
+    // On Vercel, we MUST use the production URI
+    if (process.env.VERCEL) {
+      console.log('🌐 Production Environment Detected (Vercel)');
+      if (!uri) throw new Error('MONGODB_URI is missing in Vercel Environment Variables!');
+    } 
+    // Locally, we fallback to memory server if no URI exists
+    else if (!uri || uri.includes('localhost')) {
       console.log('🔄 No production database detected. Auto-provisioning temporary engine...');
       const { MongoMemoryServer } = require('mongodb-memory-server');
       const mongod = await MongoMemoryServer.create();
