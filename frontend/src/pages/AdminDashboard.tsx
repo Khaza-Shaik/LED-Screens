@@ -24,8 +24,6 @@ const AdminDashboard = () => {
       setSchedules(schedulesRes.data);
     } catch (err) {
       console.error('Fetch failed');
-    } finally {
-      setLoading(false);
     }
   };
 
