@@ -70,10 +70,10 @@ const startBackend = async () => {
     const screenCount = await Screen.countDocuments();
     if (screenCount === 0) {
       await Screen.create([
-        { name: 'Benz Circle LED', location: 'Benz Circle, Vijayawada', deviceId: 'benz_circle_001' },
-        { name: 'MG Road LED', location: 'MG Road, Vijayawada', deviceId: 'mg_road_001' }
+        { name: 'Benz Circle LED', location: 'Benz Circle, Vijayawada', deviceId: 'benz_circle_001', status: 'online' },
+        { name: 'MG Road LED', location: 'MG Road, Vijayawada', deviceId: 'mg_road_001', status: 'online' }
       ]);
-      console.log('🖥️  Default Screens Created: Benz Circle, MG Road');
+      console.log('🖥️  Production Screens Initialized');
     }
   } catch (err) {
     console.error('❌ Critical Startup Error:', err.message);
@@ -111,3 +111,4 @@ const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+module.exports = app;
