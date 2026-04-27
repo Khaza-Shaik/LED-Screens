@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import { Play } from 'lucide-react';
 
 const footerLinks = {
   Platform: [

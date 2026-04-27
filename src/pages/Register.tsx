@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Mail, Lock, ArrowRight, Play, CheckCircle } from 'lucide-react';
+import { User, Mail, Lock, ArrowRight, CheckCircle } from 'lucide-react';
 
 const Register = () => {
   const navigate = useNavigate();

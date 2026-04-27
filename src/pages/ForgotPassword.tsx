@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, ArrowRight, Play, CheckCircle } from 'lucide-react';
+import { Mail, ArrowRight, CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const ForgotPassword = () => {
