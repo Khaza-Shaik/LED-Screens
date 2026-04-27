@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trash2, Plus, Clock, ShieldCheck, Monitor, Play, CheckCircle, XCircle, LayoutGrid, ListFilter } from 'lucide-react';
+import { Trash2, Plus, Clock, ShieldCheck, Monitor, Play, CheckCircle, LayoutGrid, ListFilter } from 'lucide-react';
 import API from '../services/api';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState<'approvals' | 'screens'>('approvals');
   const [screens, setScreens] = useState<any[]>([]);
   const [schedules, setSchedules] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({ name: '', location: '', deviceId: '' });
 
   useEffect(() => {
