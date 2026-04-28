@@ -70,9 +70,17 @@ const Locations = () => {
 
   const fetchBillboards = async () => {
     try {
+      console.log('📡 Fetching billboards...');
       const response = await API.get('/billboards');
-      setBillboards(response.data.length ? response.data : FALLBACK_BILLBOARDS);
+      // Normalize _id to id if needed
+      const normalized = response.data.map((bb: any) => ({
+        ...bb,
+        id: bb.id || bb._id
+      }));
+      setBillboards(normalized.length ? normalized : FALLBACK_BILLBOARDS);
+      console.log('✅ Billboards loaded:', normalized.length || FALLBACK_BILLBOARDS.length);
     } catch (err) {
+      console.error('❌ Failed to fetch billboards:', err);
       setBillboards(FALLBACK_BILLBOARDS);
     } finally {
       setLoading(false);
@@ -86,9 +94,12 @@ const Locations = () => {
   const handleAddLocation = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await API.post('/billboards', newLocation);
+      console.log('🚀 Adding location:', newLocation);
+      const res = await API.post('/billboards', newLocation);
+      console.log('✅ Location added:', res.data);
       setShowAddForm(false);
       fetchBillboards();
+      // ... reset state ...
       setNewLocation({
         location: '',
         price: '',
@@ -252,7 +263,10 @@ const Locations = () => {
             />
             <MapViewHandler center={mapCenter} zoom={mapZoom} />
             {isAdmin && showAddForm && (
-              <MapEvents onMapClick={(lat, lng) => setNewLocation(prev => ({ ...prev, lat, lng }))} />
+              <MapEvents onMapClick={(lat, lng) => {
+                setNewLocation(prev => ({ ...prev, lat, lng }));
+                setMapCenter({ lat, lng });
+              }} />
             )}
 
             {/* Preview Marker for New Location */}
