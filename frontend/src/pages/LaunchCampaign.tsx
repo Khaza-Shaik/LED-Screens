@@ -5,11 +5,7 @@ import PremiumTimePicker from '../components/PremiumTimePicker';
 import { motion, AnimatePresence } from 'framer-motion';
 import { uploadVideo, createSchedule, getScreens } from '../services/campaignService';
 
-const TARGET_LOCATIONS = [
-  { name: 'Benz Circle LED', price: 120, impressions: 50000, city: 'Vijayawada' },
-  { name: 'MG Road LED', price: 95, impressions: 35000, city: 'Vijayawada' },
-  { name: 'Pandit Nehru Bus Station', price: 150, impressions: 65000, city: 'Vijayawada' },
-];
+// TARGET_LOCATIONS removed to use dynamic screens from API
 
 const formatTimeAMPM = (time: string) => {
   if (!time) return '';
@@ -93,13 +89,13 @@ const LaunchCampaign = () => {
   })();
 
   const totalCost = selectedLocs.reduce((sum, name) => {
-    const loc = TARGET_LOCATIONS.find(l => l.name === name);
-    return sum + (loc ? loc.price * duration : 0);
+    const loc = screens.find(l => l.name === name);
+    return sum + (loc ? (loc.price || 0) * (duration || 1) : 0);
   }, 0);
 
   const estImpressions = selectedLocs.reduce((sum, name) => {
-    const loc = TARGET_LOCATIONS.find(l => l.name === name);
-    return sum + (loc ? loc.impressions * (duration || 1) : 0);
+    const loc = screens.find(l => l.name === name);
+    return sum + (loc ? (loc.impressions || 0) * (duration || 1) : 0);
   }, 0);
 
   const toggleLoc = (name: string) => setSelectedLocs(p => p.includes(name) ? p.filter(l => l !== name) : [...p, name]);
@@ -172,7 +168,7 @@ const LaunchCampaign = () => {
                             <div className="flex items-center gap-4 text-xs font-medium text-slate-500">
                               <span>Premium Location</span>
                               <span className="text-slate-300">|</span>
-                              <span>₹120/hr</span>
+                              <span>₹{loc.price || 0}/day</span>
                             </div>
                           </div>
                           <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
@@ -354,7 +350,7 @@ const LaunchCampaign = () => {
                     <p className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Selected Screens</p>
                     <div className="space-y-2">
                       {selectedLocs.map(name => {
-                        const loc = TARGET_LOCATIONS.find(l => l.name === name)!;
+                        const loc = screens.find(l => l.name === name);
                         return (
                           <div key={name} className="flex items-center justify-between py-2.5 px-4 bg-slate-50 border border-slate-200 rounded-lg group">
                             <div className="flex items-center gap-2.5">
@@ -362,7 +358,7 @@ const LaunchCampaign = () => {
                               <span className="text-sm font-semibold text-slate-800">{name}</span>
                             </div>
                             <div className="flex items-center gap-3">
-                              <span className="text-xs font-bold text-slate-600">₹{loc.price}/hr</span>
+                              <span className="text-xs font-bold text-slate-600">₹{loc?.price || 0}/day</span>
                               <button 
                                 onClick={() => {
                                   const newLocs = selectedLocs.filter(l => l !== name);

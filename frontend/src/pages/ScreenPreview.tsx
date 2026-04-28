@@ -9,11 +9,20 @@ const ScreenPreview = () => {
   const [screenInfo, setScreenInfo] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
+  const getMediaUrl = (path: string) => {
+    if (!path) return '';
+    const baseUrl = (import.meta.env.VITE_API_URL || '/api').replace('/api', '').replace(/\/$/, '');
+    const cleanPath = path.startsWith('/') ? path : `/${path}`;
+    const finalUrl = `${baseUrl}${cleanPath}`;
+    console.log('🎬 Screen Media URL:', finalUrl);
+    return finalUrl;
+  };
+
   const fetchContent = async () => {
     try {
       const response = await API.get(`/device/${deviceId}`);
       if (response.data.current) {
-        setCurrentVideo(response.data.current.videoId);
+        setCurrentVideo(response.data.current);
       } else {
         setCurrentVideo(null);
       }
@@ -69,10 +78,10 @@ const ScreenPreview = () => {
           
           {currentVideo ? (
             <div className="absolute inset-0">
-              {currentVideo.url.match(/\.(mp4|webm)$/i) ? (
+              {currentVideo.url?.match(/\.(mp4|webm|mov)$/i) ? (
                 <video 
                   key={currentVideo._id}
-                  src={`http://localhost:5000${currentVideo.url}`}
+                  src={getMediaUrl(currentVideo.url)}
                   autoPlay 
                   loop 
                   muted 
@@ -80,7 +89,7 @@ const ScreenPreview = () => {
                 />
               ) : (
                 <img 
-                  src={`http://localhost:5000${currentVideo.url}`} 
+                  src={getMediaUrl(currentVideo.url)} 
                   className="w-full h-full object-cover shadow-inner"
                   alt="Current Ad"
                 />

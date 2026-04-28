@@ -7,7 +7,6 @@ import Home from './pages/Home';
 import Locations from './pages/Locations';
 import LaunchCampaign from './pages/LaunchCampaign';
 import Pricing from './pages/Pricing';
-import Analytics from './pages/Analytics';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
@@ -17,9 +16,12 @@ import MyBookings from './pages/MyBookings';
 import ScreenPreview from './pages/ScreenPreview';
 
 
+
+
 function AppContent() {
   const location = useLocation();
   const token = localStorage.getItem('token');
+  const userRole = localStorage.getItem('userRole');
   
   const isAuthPage = ['/login', '/register', '/forgot-password'].includes(location.pathname);
   const isScreenPage = location.pathname.startsWith('/screen/');
@@ -33,8 +35,6 @@ function AppContent() {
         <Routes>
           {/* ── Public routes ─────────────────────── */}
           <Route path="/login"    element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/docs" element={<ApiDocs />} />
           <Route path="/screen/:deviceId" element={<ScreenPreview />} />
 
@@ -44,8 +44,7 @@ function AppContent() {
           <Route path="/locations" element={<ProtectedRoute><Locations /></ProtectedRoute>} />
           <Route path="/launch-campaign" element={<ProtectedRoute><LaunchCampaign /></ProtectedRoute>} />
           <Route path="/pricing" element={<ProtectedRoute><Pricing /></ProtectedRoute>} />
-          <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
-          <Route path="/my-bookings" element={<ProtectedRoute><MyBookings /></ProtectedRoute>} />
+          <Route path="/slot-booked" element={<ProtectedRoute><MyBookings /></ProtectedRoute>} />
           <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
 
           {/* ── Fallback ──────────────────────────── */}

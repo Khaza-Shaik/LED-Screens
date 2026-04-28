@@ -3,10 +3,10 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 
 const navLinks = [
+  { label: 'Home', to: '/' },
   { label: 'Locations', to: '/locations' },
   { label: 'Plans', to: '/pricing' },
-  { label: 'Analytics', to: '/analytics' },
-  { label: 'My Bookings', to: '/my-bookings' },
+  { label: 'Slot Booked', to: '/slot-booked' },
 ];
 
 const Navbar = () => {

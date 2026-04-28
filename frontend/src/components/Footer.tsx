@@ -4,7 +4,7 @@ const footerLinks = {
   Platform: [
     { label: 'Locations', to: '/locations' },
     { label: 'Plans', to: '/pricing' },
-    { label: 'Analytics', to: '/analytics' },
+    { label: 'Slot Booked', to: '/slot-booked' },
     { label: 'Book your slot', to: '/launch-campaign' },
   ],
   Resources: [

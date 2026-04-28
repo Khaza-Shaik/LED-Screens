@@ -111,9 +111,6 @@ const Login = () => {
                   className="w-full pl-11 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50/50 focus:bg-white transition-all"
                 />
               </div>
-              <div className="flex justify-end mt-1">
-                <Link to="/forgot-password" className="text-[13px] font-bold text-indigo-600 hover:text-indigo-700 tracking-wide">Forgot your password?</Link>
-              </div>
             </div>
 
             {error && (
@@ -148,14 +145,6 @@ const Login = () => {
             </div>
           </div>
 
-          <div className="mt-8 pt-8 border-t border-slate-100 text-center">
-            <p className="text-sm text-slate-500 font-bold">
-              Don't have an account?{' '}
-              <Link to="/register" className="text-indigo-600 font-black hover:text-indigo-700 underline underline-offset-4 decoration-2">
-                Create one
-              </Link>
-            </p>
-          </div>
         </motion.div>
       </div>
       </div>

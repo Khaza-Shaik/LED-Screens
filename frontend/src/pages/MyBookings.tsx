@@ -1,5 +1,5 @@
-import { motion } from 'framer-motion';
-import { MapPin, Calendar, Clock, ChevronRight, CheckCircle2, Timer, AlertCircle, BarChart2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { MapPin, Calendar, Clock, ChevronRight, CheckCircle2, Timer, AlertCircle, BarChart2, Search, Filter, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import { useState, useEffect } from 'react';
@@ -16,6 +16,8 @@ const statusStyles = {
 const MyBookings = () => {
   const [schedules, setSchedules] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
 
   useEffect(() => {
     const fetchSchedules = async () => {
@@ -30,6 +32,16 @@ const MyBookings = () => {
     };
     fetchSchedules();
   }, []);
+
+  const filteredSchedules = schedules.filter(s => {
+    const matchesSearch = 
+      (s.screenId?.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (s.videoId?.title || '').toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesStatus = statusFilter === 'all' || s.status === statusFilter;
+    
+    return matchesSearch && matchesStatus;
+  });
 
   const activeSlots = schedules.filter(s => s.status === 'playing').length;
   const upcomingSlots = schedules.filter(s => s.status === 'approved').length;
@@ -54,22 +66,11 @@ const MyBookings = () => {
               transition={{ delay: 0.1 }}
               className="text-3xl md:text-4xl font-black tracking-tight text-slate-900"
             >
-              My <span className="text-indigo-600">Bookings</span>
+              Slot <span className="text-indigo-600">Booked</span>
             </motion.h1>
           </div>
           
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2 }}
-          >
-            <Link 
-              to="/launch-campaign" 
-              className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 hover:-translate-y-0.5 active:scale-95"
-            >
-              Book new slot <ChevronRight size={18} />
-            </Link>
-          </motion.div>
+          <div />
         </header>
 
         {/* Overview Grid */}
@@ -100,8 +101,44 @@ const MyBookings = () => {
 
         {/* Bookings Table/List */}
         <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
-          <div className="px-8 py-6 border-b border-slate-100 flex items-center justify-between">
+          <div className="px-8 py-6 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <h2 className="text-lg font-bold text-slate-900">Recent Activity</h2>
+            
+            <div className="flex flex-col sm:flex-row items-center gap-3">
+              {/* Search */}
+              <div className="relative w-full sm:w-64">
+                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input 
+                  type="text" 
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  placeholder="Search screen or video..."
+                  className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:border-indigo-500 transition-all"
+                />
+                {searchTerm && (
+                  <button onClick={() => setSearchTerm('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                    <X size={14} />
+                  </button>
+                )}
+              </div>
+
+              {/* Status Filter */}
+              <div className="relative w-full sm:w-auto">
+                <Filter size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <select 
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="w-full sm:w-auto pl-9 pr-8 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-600 focus:outline-none focus:border-indigo-500 appearance-none cursor-pointer"
+                >
+                  <option value="all">All Status</option>
+                  <option value="pending">Pending</option>
+                  <option value="approved">Approved</option>
+                  <option value="playing">Playing</option>
+                  <option value="completed">Completed</option>
+                  <option value="rejected">Rejected</option>
+                </select>
+              </div>
+            </div>
           </div>
 
           <div className="overflow-x-auto">
@@ -111,6 +148,7 @@ const MyBookings = () => {
                   <th className="px-8 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Location & Screen</th>
                   <th className="px-8 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Timeline</th>
                   <th className="px-8 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Video</th>
+                  <th className="px-8 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Payment Time</th>
                   <th className="px-8 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">Status</th>
                 </tr>
               </thead>
@@ -119,16 +157,18 @@ const MyBookings = () => {
                   <tr>
                     <td colSpan={4} className="px-8 py-20 text-center text-slate-400 font-bold">Loading schedules...</td>
                   </tr>
-                ) : schedules.length === 0 ? (
+                ) : filteredSchedules.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="px-8 py-20 text-center text-slate-400 font-bold">No schedules found.</td>
+                    <td colSpan={4} className="px-8 py-20 text-center text-slate-400 font-bold">
+                      {searchTerm || statusFilter !== 'all' ? 'No matching bookings found.' : 'No schedules found.'}
+                    </td>
                   </tr>
-                ) : schedules.map((booking, i) => (
+                ) : filteredSchedules.map((booking, i) => (
                   <motion.tr 
                     key={booking._id}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ delay: 0.1 * i }}
+                    transition={{ delay: 0.05 * i }}
                     className="group hover:bg-slate-50/80 transition-colors"
                   >
                     <td className="px-8 py-6">
@@ -156,9 +196,17 @@ const MyBookings = () => {
                       </div>
                     </td>
                     <td className="px-8 py-6">
-                      <p className="text-sm font-bold text-slate-900 mb-1">{booking.videoId?.title || 'Untitled Video'}</p>
+                      <p className="text-sm font-bold text-slate-900 mb-1 truncate max-w-[200px]">{booking.videoId?.title || 'Untitled Video'}</p>
                       <p className="text-[11px] text-indigo-600 font-bold flex items-center gap-1">
                         <BarChart2 size={10} /> {(booking.videoId?.duration || 0)}s duration
+                      </p>
+                    </td>
+                    <td className="px-8 py-6">
+                      <p className="text-sm font-bold text-slate-700 mb-1">
+                        {new Date(booking.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                      </p>
+                      <p className="text-[11px] text-slate-400 font-medium">
+                        {new Date(booking.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
                       </p>
                     </td>
                     <td className="px-8 py-6">
@@ -174,8 +222,15 @@ const MyBookings = () => {
           </div>
           
           <div className="px-8 py-5 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between">
-            <p className="text-xs text-slate-500 font-medium italic">Showing last 3 months of campaign history</p>
-            <button className="text-xs font-bold text-indigo-600 hover:text-indigo-700">View Full Archive →</button>
+            <p className="text-xs text-slate-500 font-medium italic">Showing {filteredSchedules.length} results</p>
+            {(searchTerm || statusFilter !== 'all') && (
+              <button 
+                onClick={() => { setSearchTerm(''); setStatusFilter('all'); }}
+                className="text-xs font-bold text-indigo-600 hover:text-indigo-700"
+              >
+                Clear all filters
+              </button>
+            )}
           </div>
         </div>
 

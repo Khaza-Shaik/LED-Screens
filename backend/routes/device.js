@@ -39,14 +39,19 @@ router.get('/:deviceId', async (req, res) => {
 
     res.json({
       current: currentSchedule ? {
-        url: currentSchedule.videoId.filePath,
+        ...currentSchedule.videoId.toJSON(),
+        url: currentSchedule.videoId.url, // Explicitly include virtual url
         startTime: currentSchedule.startTime,
         endTime: currentSchedule.endTime
       } : null,
       next: nextSchedule ? {
-        url: nextSchedule.videoId.filePath,
+        ...nextSchedule.videoId.toJSON(),
         startTime: nextSchedule.startTime
-      } : null
+      } : null,
+      screen: {
+        name: screen.name,
+        location: screen.location
+      }
     });
   } catch (err) {
     res.status(500).send('Server error');

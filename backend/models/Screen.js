@@ -5,6 +5,8 @@ const ScreenSchema = new mongoose.Schema({
   location: { type: String, required: true },
   deviceId: { type: String, required: true, unique: true },
   status: { type: String, enum: ['online', 'offline'], default: 'offline' },
+  price: { type: Number, default: 0 },
+  impressions: { type: Number, default: 0 },
   lastSeen: { type: Date, default: Date.now },
   createdAt: { type: Date, default: Date.now }
 });
