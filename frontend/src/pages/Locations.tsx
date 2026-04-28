@@ -123,16 +123,6 @@ const Locations = () => {
     }
   };
 
-  const handleClearAll = async () => {
-    if (!window.confirm('Are you sure you want to remove ALL locations?')) return;
-    try {
-      await API.delete('/billboards');
-      fetchBillboards();
-    } catch (err) {
-      alert('Failed to clear locations');
-    }
-  };
-
   const filtered = useMemo(() => billboards.filter(bb => {
     const q = searchTerm.toLowerCase().trim();
     return (!q || bb.location.toLowerCase().includes(q)) &&
@@ -192,14 +182,6 @@ const Locations = () => {
                 className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 text-white text-xs font-black uppercase tracking-widest rounded-lg hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200"
               >
                 <Plus size={14} /> Add Location
-              </button>
-            )}
-            {isAdmin && billboards.length > 0 && (
-              <button 
-                onClick={handleClearAll}
-                className="flex items-center gap-2 px-4 py-2.5 bg-rose-50 text-rose-600 text-xs font-black uppercase tracking-widest rounded-lg hover:bg-rose-100 transition-all border border-rose-100"
-              >
-                Clear All
               </button>
             )}
           </div>
