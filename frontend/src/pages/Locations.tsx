@@ -99,6 +99,10 @@ const Locations = () => {
 
   const handleAddLocation = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isNaN(newLocation.lat) || isNaN(newLocation.lng)) {
+      alert('Invalid coordinates selected');
+      return;
+    }
     try {
       console.log('🚀 Adding location:', newLocation);
       const res = await API.post('/billboards', newLocation);
@@ -265,6 +269,7 @@ const Locations = () => {
           >
             {isAdmin && showAddForm && (
               <MapEvents onMapClick={(lat, lng) => {
+                if (isNaN(lat) || isNaN(lng)) return;
                 console.log('📍 State Update: Setting Lat/Lng', lat, lng);
                 setNewLocation(prev => ({ ...prev, lat, lng }));
                 setMapCenter({ lat, lng });
@@ -285,41 +290,44 @@ const Locations = () => {
               </Marker>
             )}
 
-            {filtered.map(bb => (
-              <Marker
-                key={bb.id}
-                position={[bb.lat, bb.lng]}
-                icon={customIcon}
-                eventHandlers={{ click: () => focusBillboard(bb) }}
-              >
-                <Popup>
-                  <div className="min-w-[200px] p-1">
-                    <div className="flex items-start justify-between mb-2 pb-2 border-b border-slate-100">
-                      <h3 className="font-bold text-slate-900 text-sm leading-tight">{bb.location}</h3>
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ml-2 shrink-0 ${
-                        bb.status === 'Active' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
-                      }`}>{bb.status}</span>
-                    </div>
-                    <div className="space-y-1.5 text-xs">
-                      <div className="flex justify-between">
-                        <span className="text-slate-500 font-medium">Rate:</span>
-                        <span className="font-bold text-slate-900">{bb.price}/hr</span>
+            {filtered.map(bb => {
+              if (isNaN(bb.lat) || isNaN(bb.lng)) return null;
+              return (
+                <Marker
+                  key={bb.id}
+                  position={[bb.lat, bb.lng]}
+                  icon={customIcon}
+                  eventHandlers={{ click: () => focusBillboard(bb) }}
+                >
+                  <Popup>
+                    <div className="min-w-[200px] p-1">
+                      <div className="flex items-start justify-between mb-2 pb-2 border-b border-slate-100">
+                        <h3 className="font-bold text-slate-900 text-sm leading-tight">{bb.location}</h3>
+                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ml-2 shrink-0 ${
+                          bb.status === 'Active' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
+                        }`}>{bb.status}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-slate-500 font-medium">Est. Reach:</span>
-                        <span className="font-bold text-indigo-600">{bb.impressions}</span>
+                      <div className="space-y-1.5 text-xs">
+                        <div className="flex justify-between">
+                          <span className="text-slate-500 font-medium">Rate:</span>
+                          <span className="font-bold text-slate-900">{bb.price}/hr</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-500 font-medium">Est. Reach:</span>
+                          <span className="font-bold text-indigo-600">{bb.impressions}</span>
+                        </div>
                       </div>
+                      <Link
+                        to="/launch-campaign"
+                        className="mt-3 block w-full py-2 bg-indigo-600 text-white text-xs font-bold text-center rounded-lg hover:bg-indigo-700 transition-colors"
+                      >
+                        Book This Screen
+                      </Link>
                     </div>
-                    <Link
-                      to="/launch-campaign"
-                      className="mt-3 block w-full py-2 bg-indigo-600 text-white text-xs font-bold text-center rounded-lg hover:bg-indigo-700 transition-colors"
-                    >
-                      Book This Screen
-                    </Link>
-                  </div>
-                </Popup>
-              </Marker>
-            ))}
+                  </Popup>
+                </Marker>
+              );
+            })}
           </MapContainer>
 
           {/* Map badge */}
