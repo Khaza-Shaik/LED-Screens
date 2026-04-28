@@ -35,8 +35,14 @@ function MapViewHandler({ center, zoom }: { center: { lat: number; lng: number }
 }
 
 function MapEvents({ onMapClick }: { onMapClick: (lat: number, lng: number) => void }) {
+  useEffect(() => {
+    console.log('🗺️ Map Click Listener: Active');
+    return () => console.log('🗺️ Map Click Listener: Inactive');
+  }, []);
+
   useMapEvents({
     click(e) {
+      console.log('📍 Map Click Detected:', e.latlng);
       onMapClick(e.latlng.lat, e.latlng.lng);
     },
   });
@@ -257,17 +263,18 @@ const Locations = () => {
             style={{ height: '100%', width: '100%' }}
             zoomControl={true}
           >
+            {isAdmin && showAddForm && (
+              <MapEvents onMapClick={(lat, lng) => {
+                console.log('📍 State Update: Setting Lat/Lng', lat, lng);
+                setNewLocation(prev => ({ ...prev, lat, lng }));
+                setMapCenter({ lat, lng });
+              }} />
+            )}
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
               url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
             />
             <MapViewHandler center={mapCenter} zoom={mapZoom} />
-            {isAdmin && showAddForm && (
-              <MapEvents onMapClick={(lat, lng) => {
-                setNewLocation(prev => ({ ...prev, lat, lng }));
-                setMapCenter({ lat, lng });
-              }} />
-            )}
 
             {/* Preview Marker for New Location */}
             {isAdmin && showAddForm && (
