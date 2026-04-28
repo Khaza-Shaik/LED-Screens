@@ -9,6 +9,7 @@ const path = require('path');
 
 // Models
 const User = require('./models/User');
+const Billboard = require('./models/Billboard');
 const Screen = require('./models/Screen');
 const Video = require('./models/Video');
 const Schedule = require('./models/Schedule');
@@ -52,24 +53,45 @@ const connectDB = async () => {
     const adminExists = await User.findOne({ email: 'admin@jaan.com' });
     if (!adminExists) {
       await User.create({ name: 'System Admin', email: 'admin@jaan.com', password: 'adminjaan123', role: 'admin' });
+      console.log('👤 Created Admin: admin@jaan.com / adminjaan123');
     }
+
     const userExists = await User.findOne({ email: 'user@jaan.com' });
     if (!userExists) {
       await User.create({ name: 'Test User', email: 'user@jaan.com', password: 'userjaan123', role: 'user' });
+      console.log('👤 Created User: user@jaan.com / userjaan123');
+    }
+
+    // Seed Billboards if empty
+    const billboardCount = await Billboard.countDocuments();
+    if (billboardCount === 0) {
+      const initialBillboards = [
+        { location: "Benz Circle, Vijayawada", status: "High Demand", price: "₹4,500/hr", impressions: "1.8M", lat: 16.5015, lng: 80.6438 },
+        { location: "MG Road, Vijayawada", status: "Active", price: "₹3,800/hr", impressions: "1.2M", lat: 16.5135, lng: 80.6395 },
+        { location: "PNBS Area, Vijayawada", status: "Active", price: "₹3,200/hr", impressions: "2.5M", lat: 16.5186, lng: 80.6272 },
+        { location: "Cyber Hub, Gurgaon", status: "Active", price: "₹5,000/hr", impressions: "1.5M", lat: 28.4951, lng: 77.0878 },
+        { location: "Bandra-Worli Sea Link, Mumbai", status: "Active", price: "₹4,200/hr", impressions: "2.1M", lat: 19.0371, lng: 72.8174 }
+      ];
+      await Billboard.insertMany(initialBillboards);
+      console.log('📍 Seeded 5 Billboards');
     }
   } catch (err) {
     console.error('❌ Database Connection Error:', err.message);
-    // Don't exit in serverless, just let the request fail so logs can be seen
     if (!process.env.VERCEL) process.exit(1);
   }
 };
 
 // Global connection state
 let cachedDb = null;
-app.use(async (req, res, next) => {
+const initApp = async () => {
+  await connectDB();
+  cachedDb = mongoose.connection;
+};
+initApp();
+
+app.use((req, res, next) => {
   if (!cachedDb) {
-    await connectDB();
-    cachedDb = mongoose.connection;
+     return res.status(503).send('Database connecting...');
   }
   next();
 });
@@ -94,6 +116,7 @@ app.use('/api/screens', require('./routes/screens'));
 app.use('/api/videos', require('./routes/videos'));
 app.use('/api/schedule', require('./routes/schedules'));
 app.use('/api/device', require('./routes/device'));
+app.use('/api/billboards', require('./routes/billboards'));
 
 // Start Scheduler
 require('./services/scheduler');

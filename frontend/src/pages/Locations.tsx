@@ -19,6 +19,8 @@ const customIcon = new L.Icon({
 });
 
 import { FALLBACK_BILLBOARDS, DEFAULT_MAP_CENTER, type Billboard } from '../data/inventory';
+import API from '../services/api';
+import { Plus, X } from 'lucide-react';
 
 function MapViewHandler({ center, zoom }: { center: { lat: number; lng: number }; zoom: number }) {
   const map = useMap();
@@ -43,13 +45,53 @@ const Locations = () => {
   const [mapCenter, setMapCenter] = useState(DEFAULT_MAP_CENTER);
   const [mapZoom, setMapZoom] = useState(12);
   const [selectedId, setSelectedId] = useState<string | number | null>(null);
+  const [showAddForm, setShowAddForm] = useState(false);
+  
+  const userRole = localStorage.getItem('userRole');
+  const isAdmin = userRole === 'admin';
+
+  const [newLocation, setNewLocation] = useState({
+    location: '',
+    price: '',
+    impressions: '',
+    status: 'Active',
+    lat: 16.5062,
+    lng: 80.6480
+  });
+
+  const fetchBillboards = async () => {
+    try {
+      const response = await API.get('/billboards');
+      setBillboards(response.data.length ? response.data : FALLBACK_BILLBOARDS);
+    } catch (err) {
+      setBillboards(FALLBACK_BILLBOARDS);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    fetch('/api/billboards')
-      .then(res => { if (!res.ok) throw new Error(); return res.json(); })
-      .then(data => { setBillboards(data.length ? data : FALLBACK_BILLBOARDS); setLoading(false); })
-      .catch(() => { setBillboards(FALLBACK_BILLBOARDS); setLoading(false); });
+    fetchBillboards();
   }, []);
+
+  const handleAddLocation = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await API.post('/billboards', newLocation);
+      setShowAddForm(false);
+      fetchBillboards();
+      setNewLocation({
+        location: '',
+        price: '',
+        impressions: '',
+        status: 'Active',
+        lat: 16.5062,
+        lng: 80.6480
+      });
+    } catch (err) {
+      alert('Failed to add location');
+    }
+  };
 
   const filtered = useMemo(() => billboards.filter(bb => {
     const q = searchTerm.toLowerCase().trim();
@@ -104,6 +146,14 @@ const Locations = () => {
               <SlidersHorizontal size={13} />
               {filtered.length} assets
             </div>
+            {isAdmin && (
+              <button 
+                onClick={() => setShowAddForm(true)}
+                className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 text-white text-xs font-black uppercase tracking-widest rounded-lg hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200"
+              >
+                <Plus size={14} /> Add Location
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -236,6 +286,93 @@ const Locations = () => {
           </div>
         </div>
       </div>
+      {/* ─── Add Location Form Modal ───────────────── */}
+      <AnimatePresence>
+        {showAddForm && (
+          <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl"
+            >
+              <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-indigo-50/50">
+                <h2 className="text-lg font-black text-slate-900">Add New Location</h2>
+                <button onClick={() => setShowAddForm(false)} className="text-slate-400 hover:text-slate-600">
+                  <X size={20} />
+                </button>
+              </div>
+              <form onSubmit={handleAddLocation} className="p-6 space-y-4">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Location Name</label>
+                  <input 
+                    type="text" 
+                    required
+                    value={newLocation.location}
+                    onChange={e => setNewLocation({...newLocation, location: e.target.value})}
+                    placeholder="e.g. Times Square, NY"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-sm focus:outline-none focus:border-indigo-500 transition-all"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Price (e.g. ₹5,000/hr)</label>
+                    <input 
+                      type="text" 
+                      required
+                      value={newLocation.price}
+                      onChange={e => setNewLocation({...newLocation, price: e.target.value})}
+                      placeholder="₹5,000/hr"
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-sm focus:outline-none focus:border-indigo-500 transition-all"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Impressions (e.g. 1.5M)</label>
+                    <input 
+                      type="text" 
+                      required
+                      value={newLocation.impressions}
+                      onChange={e => setNewLocation({...newLocation, impressions: e.target.value})}
+                      placeholder="1.5M"
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-sm focus:outline-none focus:border-indigo-500 transition-all"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Latitude</label>
+                    <input 
+                      type="number" 
+                      step="0.0001"
+                      required
+                      value={newLocation.lat}
+                      onChange={e => setNewLocation({...newLocation, lat: parseFloat(e.target.value)})}
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-sm focus:outline-none focus:border-indigo-500 transition-all"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Longitude</label>
+                    <input 
+                      type="number" 
+                      step="0.0001"
+                      required
+                      value={newLocation.lng}
+                      onChange={e => setNewLocation({...newLocation, lng: parseFloat(e.target.value)})}
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-sm focus:outline-none focus:border-indigo-500 transition-all"
+                    />
+                  </div>
+                </div>
+                <button 
+                  type="submit"
+                  className="w-full py-4 bg-indigo-600 text-white font-black uppercase tracking-widest rounded-xl hover:bg-indigo-700 shadow-xl shadow-indigo-200 transition-all mt-4"
+                >
+                  Create Location Asset
+                </button>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
