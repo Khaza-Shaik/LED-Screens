@@ -337,20 +337,20 @@ const Locations = () => {
           </div>
         </div>
       </div>
-      {/* ─── Add Location Form Modal ───────────────── */}
+      {/* ─── Add Location Form Panel ───────────────── */}
       <AnimatePresence>
         {showAddForm && (
-          <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+          <div className="fixed top-24 right-6 z-[2000] w-full max-w-md pointer-events-none">
             <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl"
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 50 }}
+              className="bg-white rounded-3xl overflow-hidden shadow-2xl border border-slate-200 pointer-events-auto"
             >
               <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-indigo-50/50">
                 <div>
                   <h2 className="text-lg font-black text-slate-900">Add New Location</h2>
-                  <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest">Click on map to pick coordinates</p>
+                  <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest animate-pulse">Click on map to pick coordinates</p>
                 </div>
                 <button onClick={() => setShowAddForm(false)} className="text-slate-400 hover:text-slate-600">
                   <X size={20} />
