@@ -62,19 +62,7 @@ const connectDB = async () => {
       console.log('👤 Created User: user@jaan.com / userjaan123');
     }
 
-    // Seed Billboards if empty
-    const billboardCount = await Billboard.countDocuments();
-    if (billboardCount === 0) {
-      const initialBillboards = [
-        { location: "Benz Circle, Vijayawada", status: "High Demand", price: "₹4,500/hr", impressions: "1.8M", lat: 16.5015, lng: 80.6438 },
-        { location: "MG Road, Vijayawada", status: "Active", price: "₹3,800/hr", impressions: "1.2M", lat: 16.5135, lng: 80.6395 },
-        { location: "PNBS Area, Vijayawada", status: "Active", price: "₹3,200/hr", impressions: "2.5M", lat: 16.5186, lng: 80.6272 },
-        { location: "Cyber Hub, Gurgaon", status: "Active", price: "₹5,000/hr", impressions: "1.5M", lat: 28.4951, lng: 77.0878 },
-        { location: "Bandra-Worli Sea Link, Mumbai", status: "Active", price: "₹4,200/hr", impressions: "2.1M", lat: 19.0371, lng: 72.8174 }
-      ];
-      await Billboard.insertMany(initialBillboards);
-      console.log('📍 Seeded 5 Billboards');
-    }
+    // Seed Billboards removed by user request
   } catch (err) {
     console.error('❌ Database Connection Error:', err.message);
     if (!process.env.VERCEL) process.exit(1);

@@ -30,4 +30,17 @@ router.post('/', auth, async (req, res) => {
   }
 });
 
+// @route   DELETE api/billboards
+// @desc    Delete all billboards (Admin only)
+router.delete('/', auth, async (req, res) => {
+  if (req.user.role !== 'admin') return res.status(403).json({ msg: 'Not authorized' });
+  try {
+    await Billboard.deleteMany({});
+    res.json({ msg: 'All billboards removed' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
 module.exports = router;
