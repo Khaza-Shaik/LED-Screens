@@ -340,7 +340,7 @@ const AdminDashboard = () => {
                     { label: 'Active Campaigns', value: schedules.filter(s => s.status === 'playing').length.toString(), change: '+2.1%', up: true, icon: Monitor },
                     { label: 'Pending Reviews', value: pendingCount.toString(), change: '-3.2%', up: false, icon: Clock },
                     { label: 'Estimated Revenue', value: '₹42.8L', change: '+24.6%', up: true, icon: IndianRupee },
-                  ].map(({ label, value, change, up, icon: Icon }, i) => (
+                  ].map(({ label, value, change, up, icon: Icon }) => (
                     <div key={label} className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
                       <div className="flex items-center justify-between mb-4">
                         <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{label}</span>
