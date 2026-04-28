@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Search, ChevronRight, TrendingUp, Filter, SlidersHorizontal } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -31,6 +31,15 @@ function MapViewHandler({ center, zoom }: { center: { lat: number; lng: number }
     }, 100);
     return () => clearTimeout(timer);
   }, [map]);
+  return null;
+}
+
+function MapEvents({ onMapClick }: { onMapClick: (lat: number, lng: number) => void }) {
+  useMapEvents({
+    click(e) {
+      onMapClick(e.latlng.lat, e.latlng.lng);
+    },
+  });
   return null;
 }
 
@@ -242,6 +251,19 @@ const Locations = () => {
               url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
             />
             <MapViewHandler center={mapCenter} zoom={mapZoom} />
+            {isAdmin && showAddForm && (
+              <MapEvents onMapClick={(lat, lng) => setNewLocation(prev => ({ ...prev, lat, lng }))} />
+            )}
+
+            {/* Preview Marker for New Location */}
+            {isAdmin && showAddForm && (
+              <Marker position={[newLocation.lat, newLocation.lng]} icon={customIcon}>
+                <Popup>
+                  <div className="text-xs font-bold p-1">New Location Target</div>
+                </Popup>
+              </Marker>
+            )}
+
             {filtered.map(bb => (
               <Marker
                 key={bb.id}
@@ -297,7 +319,10 @@ const Locations = () => {
               className="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl"
             >
               <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-indigo-50/50">
-                <h2 className="text-lg font-black text-slate-900">Add New Location</h2>
+                <div>
+                  <h2 className="text-lg font-black text-slate-900">Add New Location</h2>
+                  <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest">Click on map to pick coordinates</p>
+                </div>
                 <button onClick={() => setShowAddForm(false)} className="text-slate-400 hover:text-slate-600">
                   <X size={20} />
                 </button>
