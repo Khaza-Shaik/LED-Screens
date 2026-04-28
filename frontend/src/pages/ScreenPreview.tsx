@@ -11,7 +11,7 @@ const ScreenPreview = () => {
 
   const getMediaUrl = (path: string) => {
     if (!path) return '';
-    const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '').replace(/\/$/, '');
+    const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5001/api').replace('/api', '').replace(/\/$/, '');
     const cleanPath = path.startsWith('/') ? path : `/${path}`;
     const finalUrl = `${baseUrl}${cleanPath}`;
     console.log('🎬 Screen Media URL:', finalUrl);

@@ -53,6 +53,10 @@ const connectDB = async () => {
     if (!adminExists) {
       await User.create({ name: 'System Admin', email: 'admin@jaan.com', password: 'adminjaan123', role: 'admin' });
     }
+    const userExists = await User.findOne({ email: 'user@jaan.com' });
+    if (!userExists) {
+      await User.create({ name: 'Test User', email: 'user@jaan.com', password: 'userjaan123', role: 'user' });
+    }
   } catch (err) {
     console.error('❌ Database Connection Error:', err.message);
     // Don't exit in serverless, just let the request fail so logs can be seen
