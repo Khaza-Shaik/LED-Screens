@@ -1,27 +1,29 @@
 import { Link } from 'react-router-dom';
 
-const footerLinks = {
-  Platform: [
-    { label: 'Locations', to: '/locations' },
-    { label: 'Plans', to: '/pricing' },
-    { label: 'Slot Booked', to: '/slot-booked' },
-    { label: 'Book your slot', to: '/launch-campaign' },
-  ],
-  Resources: [
-    { label: 'Documentation', to: '#' },
-    { label: 'API Reference', to: '#' },
-    { label: 'Case Studies', to: '#' },
-    { label: 'Blog', to: '#' },
-  ],
-  Company: [
-    { label: 'About Us', to: '#' },
-    { label: 'Careers', to: '#' },
-    { label: 'Contact', to: '#' },
-    { label: 'Privacy Policy', to: '#' },
-  ],
-};
-
 const Footer = () => {
+  const userRole = localStorage.getItem('userRole');
+
+  const footerLinks = {
+    Platform: [
+      { label: 'Locations', to: '/locations' },
+      { label: 'Plans', to: '/pricing' },
+      { label: userRole === 'admin' ? 'Live Booking' : 'Slot Booked', to: '/slot-booked' },
+      { label: 'Book your slot', to: '/launch-campaign' },
+    ],
+    Resources: [
+      { label: 'Documentation', to: '#' },
+      { label: 'API Reference', to: '#' },
+      { label: 'Case Studies', to: '#' },
+      { label: 'Blog', to: '#' },
+    ],
+    Company: [
+      { label: 'About Us', to: '#' },
+      { label: 'Careers', to: '#' },
+      { label: 'Contact', to: '#' },
+      { label: 'Privacy Policy', to: '#' },
+    ],
+  };
+
   return (
     <footer className="bg-white border-t border-slate-200">
       <div className="max-w-6xl mx-auto px-6 pt-16 pb-10">

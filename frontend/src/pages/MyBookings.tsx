@@ -65,7 +65,11 @@ const MyBookings = () => {
               transition={{ delay: 0.1 }}
               className="text-3xl md:text-4xl font-black tracking-tight text-slate-900"
             >
-              Slot <span className="text-indigo-600">Booked</span>
+              {localStorage.getItem('userRole') === 'admin' ? (
+                <>Live <span className="text-indigo-600">Booking</span></>
+              ) : (
+                <>Slot <span className="text-indigo-600">Booked</span></>
+              )}
             </motion.h1>
           </div>
           

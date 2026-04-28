@@ -2,13 +2,6 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 
-const navLinks = [
-  { label: 'Home', to: '/' },
-  { label: 'Locations', to: '/locations' },
-  { label: 'Plans', to: '/pricing' },
-  { label: 'Slot Booked', to: '/slot-booked' },
-];
-
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -16,6 +9,13 @@ const Navbar = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
   const userRole = localStorage.getItem('userRole');
+
+  const navLinks = [
+    { label: 'Home', to: '/' },
+    { label: 'Locations', to: '/locations' },
+    { label: 'Plans', to: '/pricing' },
+    { label: userRole === 'admin' ? 'Live Booking' : 'Slot Booked', to: '/slot-booked' },
+  ];
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
