@@ -8,8 +8,6 @@ import Locations from './pages/Locations';
 import LaunchCampaign from './pages/LaunchCampaign';
 import Pricing from './pages/Pricing';
 import Login from './pages/Login';
-import Register from './pages/Register';
-import ForgotPassword from './pages/ForgotPassword';
 import AdminDashboard from './pages/AdminDashboard';
 import ApiDocs from './pages/ApiDocs';
 import MyBookings from './pages/MyBookings';
@@ -21,8 +19,6 @@ import ScreenPreview from './pages/ScreenPreview';
 function AppContent() {
   const location = useLocation();
   const token = localStorage.getItem('token');
-  const userRole = localStorage.getItem('userRole');
-  
   const isAuthPage = ['/login', '/register', '/forgot-password'].includes(location.pathname);
   const isScreenPage = location.pathname.startsWith('/screen/');
   const shouldHideUI = isAuthPage || isScreenPage || !token;

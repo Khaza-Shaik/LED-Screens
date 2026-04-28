@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trash2, Plus, Clock, ShieldCheck, Monitor, Play, CheckCircle, LayoutGrid, ListFilter, IndianRupee, Edit2, BarChart3, Eye, TrendingUp, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { Trash2, Plus, Clock, ShieldCheck, Monitor, Play, CheckCircle, LayoutGrid, ListFilter, IndianRupee, Edit2, BarChart3, Eye, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import API from '../services/api';
 
 const AdminDashboard = () => {
@@ -366,15 +366,15 @@ const AdminDashboard = () => {
                     </div>
                   </div>
                   <div className="flex items-end gap-3 h-64">
-                    {[40, 70, 45, 90, 65, 85, 55, 75, 50, 95, 60, 80].map((val, i) => (
-                      <div key={i} className="flex-1 flex flex-col items-center gap-3 group">
+                    {[40, 70, 45, 90, 65, 85, 55, 75, 50, 95, 60, 80].map((val, idx) => (
+                      <div key={idx} className="flex-1 flex flex-col items-center gap-3 group">
                         <div
                           className="w-full bg-slate-50 rounded-t-xl transition-all duration-500 group-hover:bg-indigo-500 relative overflow-hidden"
                           style={{ height: `${val}%` }}
                         >
                            <div className="absolute inset-0 bg-indigo-600/10 group-hover:bg-transparent" />
                         </div>
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{['J','F','M','A','M','J','J','A','S','O','N','D'][i]}</span>
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{['J','F','M','A','M','J','J','A','S','O','N','D'][idx]}</span>
                       </div>
                     ))}
                   </div>

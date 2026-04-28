@@ -1,6 +1,5 @@
-import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Calendar, Clock, ChevronRight, CheckCircle2, Timer, AlertCircle, BarChart2, Search, Filter, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { MapPin, Calendar, Clock, CheckCircle2, Timer, AlertCircle, BarChart2, Search, Filter, X } from 'lucide-react';
 
 import { useState, useEffect } from 'react';
 import API from '../services/api';
