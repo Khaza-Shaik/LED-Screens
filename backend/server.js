@@ -1,6 +1,4 @@
 require('dotenv').config();
-const dns = require('node:dns');
-dns.setServers(['8.8.8.8', '8.8.4.4']);
 
 const express = require('express');
 const mongoose = require('mongoose');
@@ -29,67 +27,48 @@ app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// DB Connection
-const startBackend = async () => {
+// DB Connection for Serverless/Vercel
+const connectDB = async () => {
   try {
-    let uri = process.env.MONGODB_URI;
+    const uri = process.env.MONGODB_URI;
     
-    // On Vercel, we MUST use the production URI
-    if (process.env.VERCEL) {
-      console.log('🌐 Production Environment Detected (Vercel)');
-      if (!uri) throw new Error('MONGODB_URI is missing in Vercel Environment Variables!');
-    } 
-    // Locally, we fallback to memory server if no URI exists
-    else if (!uri || uri.includes('localhost')) {
-      console.log('🔄 No production database detected. Auto-provisioning temporary engine...');
-      const { MongoMemoryServer } = require('mongodb-memory-server');
-      const mongod = await MongoMemoryServer.create();
-      uri = mongod.getUri();
-      console.log('✨ Auto-Provisioned Engine Active at:', uri);
+    if (!uri) {
+      if (process.env.VERCEL) {
+        throw new Error('MONGODB_URI is missing in Vercel Environment Variables!');
+      } else {
+        console.log('🔄 No production database detected. Auto-provisioning temporary engine...');
+        const { MongoMemoryServer } = require('mongodb-memory-server');
+        const mongod = await MongoMemoryServer.create();
+        const memUri = mongod.getUri();
+        await mongoose.connect(memUri);
+        console.log('✨ Auto-Provisioned Engine Active');
+      }
+    } else {
+      await mongoose.connect(uri);
+      console.log('✅ Jaan Entertainment Backend: Online');
     }
 
-    await mongoose.connect(uri);
-    console.log('✅ Jaan Entertainment Backend: Online');
-    
-    // Ensure test users exist
+    // Initialize default data if needed
     const adminExists = await User.findOne({ email: 'admin@jaan.com' });
     if (!adminExists) {
-      await User.create({
-        name: 'System Admin',
-        email: 'admin@jaan.com',
-        password: 'adminjaan123',
-        role: 'admin'
-      });
-      console.log('👤 Root Admin: admin@jaan.com');
-    }
-
-    const userExists = await User.findOne({ email: 'user@jaan.com' });
-    if (!userExists) {
-      await User.create({
-        name: 'Test User',
-        email: 'user@jaan.com',
-        password: 'userjaan123',
-        role: 'user'
-      });
-      console.log('👤 Test User: user@jaan.com');
-    }
-
-    // Ensure default screens exist
-    const screenCount = await Screen.countDocuments();
-    if (screenCount === 0) {
-      await Screen.create([
-        { name: 'Benz Circle LED', location: 'Benz Circle, Vijayawada', deviceId: 'benz_circle_001', status: 'online' },
-        { name: 'MG Road LED', location: 'MG Road, Vijayawada', deviceId: 'mg_road_001', status: 'online' }
-      ]);
-      console.log('🖥️  Production Screens Initialized');
+      await User.create({ name: 'System Admin', email: 'admin@jaan.com', password: 'adminjaan123', role: 'admin' });
     }
   } catch (err) {
-    console.error('❌ Critical Startup Error:', err.message);
-    process.exit(1);
+    console.error('❌ Database Connection Error:', err.message);
+    // Don't exit in serverless, just let the request fail so logs can be seen
+    if (!process.env.VERCEL) process.exit(1);
   }
 };
 
-startBackend();
+// Global connection state
+let cachedDb = null;
+app.use(async (req, res, next) => {
+  if (!cachedDb) {
+    await connectDB();
+    cachedDb = mongoose.connection;
+  }
+  next();
+});
 
 // Socket.io context
 app.set('io', io);
