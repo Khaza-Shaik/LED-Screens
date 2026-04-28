@@ -76,7 +76,7 @@ const AdminDashboard = () => {
 
   const getMediaUrl = (path: string) => {
 
-    const baseUrl = (import.meta.env.VITE_API_URL || '/api').replace('/api', '');
+    const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '');
     return `${baseUrl}${path}`;
   };
 
