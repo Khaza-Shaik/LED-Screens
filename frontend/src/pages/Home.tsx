@@ -3,7 +3,7 @@ import { ArrowRight, BarChart3, Globe, Layers, Shield, TrendingUp, Zap, MapPin, 
 import { motion } from 'framer-motion';
 
 const stats = [
-  { value: '2.4B+', label: 'Daily Impressions', delta: '+18%' },
+  { value: '2.4B+', label: 'Daily Reach', delta: '+18%' },
   { value: '340+', label: 'Premium Locations', delta: '+42' },
   { value: '98.6%', label: 'Uptime SLA', delta: 'Guaranteed' },
   { value: '₹2.1Cr', label: 'Revenue Deployed', delta: 'This Month' },
@@ -20,7 +20,7 @@ const features = [
   {
     icon: BarChart3,
     title: 'Live Attribution Analytics',
-    desc: 'Measure impressions, dwell time, and audience reach in real-time. Export reports directly to your BI tools.',
+    desc: 'Measure reach, dwell time, and audience reach in real-time. Export reports directly to your BI tools.',
     color: 'text-sky-600',
     bg: 'bg-sky-50',
   },
@@ -49,16 +49,16 @@ const features = [
     icon: Shield,
     title: 'Enterprise-Grade Security',
     desc: 'SOC 2 compliant infrastructure. All creative assets are encrypted in transit and at rest. Role-based access control.',
-    color: 'text-rose-600',
-    bg: 'bg-rose-50',
+    color: 'text-indigo-600',
+    bg: 'bg-indigo-50',
   },
 ];
 
 const inventoryHighlights = [
-  { city: 'Vijayawada', screens: 12, impressions: '4.2M/day', status: 'live' },
-  { city: 'Hyderabad', screens: 28, impressions: '11.8M/day', status: 'live' },
-  { city: 'Bangalore', screens: 35, impressions: '15.6M/day', status: 'live' },
-  { city: 'Chennai', screens: 19, impressions: '8.1M/day', status: 'limited' },
+  { city: 'Vijayawada', screens: 12, reach: '4.2M/day', status: 'live' },
+  { city: 'Hyderabad', screens: 28, reach: '11.8M/day', status: 'live' },
+  { city: 'Bangalore', screens: 35, reach: '15.6M/day', status: 'live' },
+  { city: 'Chennai', screens: 19, reach: '8.1M/day', status: 'limited' },
 ];
 
 const Home = () => {
@@ -82,24 +82,30 @@ const Home = () => {
 
             {/* H1 */}
             <motion.h1
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.05 }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
               className="text-5xl md:text-[72px] font-extrabold tracking-tight text-slate-900 leading-[1.05] mb-6"
             >
-              Reach Billions.
-              <br />
-              <span className="text-indigo-600">Everywhere They Go.</span>
+              Reach Billions.<br />
+              <motion.span 
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.4, duration: 0.8 }}
+                className="text-slate-900 relative inline-block"
+              >
+                Everywhere They Go.
+              </motion.span>
             </motion.h1>
 
             {/* Subtitle */}
             <motion.p
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
               className="text-xl text-slate-500 font-medium max-w-2xl mb-10 leading-relaxed"
             >
-              Deploy, manage, and optimize digital billboard campaigns across India's premium outdoor inventory — in real-time, from the Jaan Entertainment dashboard.
+              Deploy, manage, and optimize digital billboard campaigns across India's premium outdoor inventory — in real-time, from the <span className="text-slate-900 font-bold">Jaan Entertainment</span> dashboard.
             </motion.p>
 
             {/* CTAs */}
@@ -111,7 +117,7 @@ const Home = () => {
             >
               <Link
                 to="/launch-campaign"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-indigo-600 text-white font-bold rounded-2xl hover:bg-indigo-700 transition-all shadow-[0_4px_20px_0_rgba(79,70,229,0.35)] hover:shadow-[0_8px_30px_0_rgba(79,70,229,0.45)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-indigo-600 text-white font-bold rounded-2xl hover:bg-indigo-700 transition-all shadow-[0_4px_20px_0_rgba(225,29,72,0.35)] hover:shadow-[0_8px_30px_0_rgba(225,29,72,0.45)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
               >
                 Book your slot <ArrowRight size={20} />
               </Link>
@@ -159,28 +165,31 @@ const Home = () => {
             {inventoryHighlights.map((city, i) => (
               <motion.div
                 key={city.city}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.06, duration: 0.4 }}
-                className="bg-white border border-slate-200 rounded-xl p-6 hover:border-indigo-200 hover:shadow-md transition-all group cursor-pointer"
+                transition={{ delay: i * 0.1, duration: 0.6 }}
+                whileHover={{ y: -8, scale: 1.02 }}
+                className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-[0_20px_50px_-12px_rgba(79,70,229,0.12)] transition-all cursor-pointer group"
               >
-                <div className="flex items-center justify-between mb-4">
-                  <MapPin size={18} className="text-indigo-500" />
-                  <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${
+                <div className="flex items-center justify-between mb-5">
+                  <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                    <MapPin size={20} className="text-indigo-600 group-hover:text-white" />
+                  </div>
+                  <span className={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border shadow-sm ${
                     city.status === 'live'
-                      ? 'text-emerald-700 bg-emerald-50 border-emerald-200'
-                      : 'text-amber-700 bg-amber-50 border-amber-200'
-                  }`}>
+                      ? 'text-emerald-700 bg-emerald-50 border-emerald-200 group-hover:bg-emerald-500 group-hover:text-white group-hover:border-emerald-500'
+                      : 'text-amber-700 bg-amber-50 border-amber-200 group-hover:bg-amber-500 group-hover:text-white group-hover:border-amber-500'
+                  } transition-all duration-300`}>
                     {city.status === 'live' ? '● Live' : '◐ Limited'}
                   </span>
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-1">{city.city}</h3>
-                <p className="text-sm text-slate-500 font-medium mb-4">{city.screens} screens</p>
-                <div className="divider mb-4" />
+                <h3 className="text-lg font-bold text-slate-900 mb-1 group-hover:text-indigo-600 transition-colors">{city.city}</h3>
+                <p className="text-sm text-slate-500 font-medium mb-5">{city.screens} screens</p>
+                <div className="h-px bg-slate-100 mb-5 group-hover:bg-indigo-100 transition-colors" />
                 <div className="flex items-center gap-2">
-                  <TrendingUp size={14} className="text-indigo-400" />
-                  <span className="text-xs font-semibold text-slate-700">{city.impressions}</span>
+                  <TrendingUp size={14} className="text-indigo-400 group-hover:text-indigo-600 transition-colors" />
+                  <span className="text-xs font-semibold text-slate-700 group-hover:text-slate-900 transition-colors">{city.reach}</span>
                 </div>
               </motion.div>
             ))}
@@ -205,12 +214,16 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.07, duration: 0.4 }}
-                className="bg-white border border-slate-200 rounded-xl p-7 hover:shadow-md hover:border-slate-300 transition-all group"
+                whileHover={{ y: -5, backgroundColor: '#f8faff' }}
+                className="bg-white border border-slate-200 rounded-2xl p-8 hover:shadow-[0_20px_50px_-12px_rgba(79,70,229,0.08)] hover:border-indigo-100 transition-all group cursor-default"
               >
-                <div className={`w-10 h-10 ${f.bg} rounded-lg flex items-center justify-center mb-5`}>
-                  <f.icon size={20} className={f.color} />
-                </div>
-                <h3 className="text-base font-bold text-slate-900 mb-2">{f.title}</h3>
+                <motion.div 
+                  whileHover={{ rotate: [0, -10, 10, 0] }}
+                  className={`w-12 h-12 ${f.bg} rounded-xl flex items-center justify-center mb-6 shadow-sm group-hover:shadow-indigo-100 group-hover:shadow-lg transition-all`}
+                >
+                  <f.icon size={22} className={f.color} />
+                </motion.div>
+                <h3 className="text-lg font-bold text-slate-900 mb-3 group-hover:text-indigo-600 transition-colors">{f.title}</h3>
                 <p className="text-sm text-slate-500 leading-relaxed font-medium">{f.desc}</p>
               </motion.div>
             ))}
@@ -224,11 +237,11 @@ const Home = () => {
           <div className="bg-indigo-600 rounded-2xl p-12 md:p-16 flex flex-col md:flex-row items-center justify-between gap-8 overflow-hidden relative">
             {/* Background Decoration */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500 rounded-full blur-3xl opacity-30 pointer-events-none" />
-            <div className="absolute bottom-0 left-1/3 w-48 h-48 bg-sky-400 rounded-full blur-3xl opacity-20 pointer-events-none" />
-
+            <div className="absolute bottom-0 left-1/3 w-48 h-48 bg-indigo-400 rounded-full blur-3xl opacity-20 pointer-events-none" />
+ 
             <div className="relative z-10 max-w-xl">
               <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-white mb-4">Ready to launch your first campaign?</h2>
-              <p className="text-indigo-200 text-lg font-medium">Join 500+ brands already running on India's most advanced entertainment ad-network.</p>
+              <p className="text-indigo-100 text-lg font-medium">Join 500+ brands already running on India's most advanced entertainment ad-network.</p>
             </div>
             <div className="relative z-10 flex flex-col sm:flex-row gap-4 shrink-0">
               <Link

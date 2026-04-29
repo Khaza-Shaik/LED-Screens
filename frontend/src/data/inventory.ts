@@ -3,7 +3,7 @@ export interface Billboard {
   location: string;
   status: 'Active' | 'High Demand';
   price: string;
-  impressions: string;
+
   image?: string;
   lat: number;
   lng: number;
@@ -15,7 +15,6 @@ export const FALLBACK_BILLBOARDS: Billboard[] = [
     location: "Benz Circle, Vijayawada", 
     status: "High Demand", 
     price: "₹4,500/hr", 
-    impressions: "1.8M", 
     image: "/vijayawada-billboard.png", 
     lat: 16.5015, 
     lng: 80.6438 
@@ -25,7 +24,6 @@ export const FALLBACK_BILLBOARDS: Billboard[] = [
     location: "MG Road, Vijayawada", 
     status: "Active", 
     price: "₹3,800/hr", 
-    impressions: "1.2M", 
     image: "/vijayawada-billboard.png", 
     lat: 16.5135, 
     lng: 80.6395 
@@ -35,7 +33,6 @@ export const FALLBACK_BILLBOARDS: Billboard[] = [
     location: "PNBS Area, Vijayawada", 
     status: "Active", 
     price: "₹3,200/hr", 
-    impressions: "2.5M", 
     image: "/vijayawada-billboard.png", 
     lat: 16.5186, 
     lng: 80.6272 
@@ -45,7 +42,6 @@ export const FALLBACK_BILLBOARDS: Billboard[] = [
     location: "Cyber Hub, Gurgaon", 
     status: "Active", 
     price: "₹5,000/hr", 
-    impressions: "1.5M", 
     image: "https://images.unsplash.com/photo-1595658658481-d53d3f999875?auto=format&fit=crop&w=1920&q=80", 
     lat: 28.4951, 
     lng: 77.0878 
@@ -55,7 +51,6 @@ export const FALLBACK_BILLBOARDS: Billboard[] = [
     location: "Bandra-Worli Sea Link, Mumbai", 
     status: "Active", 
     price: "₹4,200/hr", 
-    impressions: "2.1M", 
     image: "https://images.unsplash.com/photo-1562613531-df24579cc5cf?auto=format&fit=crop&w=1920&q=80", 
     lat: 19.0371, 
     lng: 72.8174 
@@ -65,8 +60,6 @@ export const FALLBACK_BILLBOARDS: Billboard[] = [
 export const TARGET_LOCATIONS = FALLBACK_BILLBOARDS.map(bb => ({
   name: bb.location,
   price: parseInt(bb.price.replace(/[^\d]/g, '')),
-  reach: bb.impressions,
-  impressions: parseInt(bb.impressions.replace(/[^\d.]/g, '')) * (bb.impressions.includes('M') ? 1000000 : 1000)
 }));
 
 export const DEFAULT_MAP_CENTER = {

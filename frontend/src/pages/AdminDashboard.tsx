@@ -8,7 +8,7 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState<'approvals' | 'screens' | 'analytics'>('approvals');
   const [screens, setScreens] = useState<any[]>([]);
   const [schedules, setSchedules] = useState<any[]>([]);
-  const [form, setForm] = useState({ name: '', location: '', deviceId: '', price: '', impressions: '' });
+  const [form, setForm] = useState({ name: '', location: '', deviceId: '', price: '' });
 
   useEffect(() => {
     fetchData();
@@ -46,10 +46,9 @@ const AdminDashboard = () => {
     try {
       await API.post('/screens', { 
         ...form, 
-        price: Number(form.price), 
-        impressions: Number(form.impressions) 
+        price: Number(form.price)
       });
-      setForm({ name: '', location: '', deviceId: '', price: '', impressions: '' });
+      setForm({ name: '', location: '', deviceId: '', price: '' });
       fetchData();
     } catch (err) { alert('Failed to create screen'); }
   };
@@ -196,7 +195,7 @@ const AdminDashboard = () => {
                           <div className="flex items-center gap-3">
                             <button 
                               onClick={() => handleReject(s._id)}
-                              className="px-6 py-3 border border-slate-200 text-rose-600 font-black text-xs uppercase tracking-widest rounded-xl hover:bg-rose-50 transition-all"
+                              className="px-6 py-3 border border-slate-200 text-indigo-600 font-black text-xs uppercase tracking-widest rounded-xl hover:bg-indigo-50 transition-all"
                             >
                               Reject
                             </button>
@@ -265,17 +264,6 @@ const AdminDashboard = () => {
                             required
                           />
                         </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Est. Impressions / Day</label>
-                          <input 
-                            type="number"
-                            value={form.impressions}
-                            onChange={e => setForm({...form, impressions: e.target.value})}
-                            placeholder="e.g. 50000"
-                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-sm focus:outline-none focus:border-indigo-500"
-                            required
-                          />
-                        </div>
                         <button className="w-full py-4 bg-indigo-600 text-white font-black text-xs uppercase tracking-widest rounded-xl hover:bg-indigo-700 shadow-xl shadow-indigo-500/20 transition-all">
                           Provision Screen
                         </button>
@@ -297,7 +285,7 @@ const AdminDashboard = () => {
                              <button onClick={() => handleUpdatePrice(screen._id, screen.price)} className="p-2 text-slate-300 hover:text-indigo-600 transition-colors">
                                 <Edit2 size={18} />
                              </button>
-                             <button onClick={() => handleDeleteScreen(screen._id)} className="p-2 text-slate-300 hover:text-rose-500 transition-colors">
+                             <button onClick={() => handleDeleteScreen(screen._id)} className="p-2 text-slate-300 hover:text-indigo-500 transition-colors">
                                 <Trash2 size={18} />
                              </button>
                           </div>
@@ -336,7 +324,7 @@ const AdminDashboard = () => {
                 {/* Stat Cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   {[
-                    { label: 'Total Impressions', value: '24.6M', change: '+18.4%', up: true, icon: Eye },
+                    { label: 'Total Reach', value: '24.6M', change: '+18.4%', up: true, icon: Eye },
                     { label: 'Active Campaigns', value: schedules.filter(s => s.status === 'playing').length.toString(), change: '+2.1%', up: true, icon: Monitor },
                     { label: 'Pending Reviews', value: pendingCount.toString(), change: '-3.2%', up: false, icon: Clock },
                     { label: 'Estimated Revenue', value: '₹42.8L', change: '+24.6%', up: true, icon: IndianRupee },
@@ -349,7 +337,7 @@ const AdminDashboard = () => {
                         </div>
                       </div>
                       <p className="text-2xl font-black text-slate-900 mb-2">{value}</p>
-                      <div className={`inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wider ${up ? 'text-emerald-600' : 'text-rose-500'}`}>
+                      <div className={`inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wider ${up ? 'text-emerald-600' : 'text-indigo-500'}`}>
                         {up ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
                         {change}
                       </div>
@@ -362,7 +350,7 @@ const AdminDashboard = () => {
                   <div className="flex items-center justify-between mb-10">
                     <div>
                       <h2 className="text-lg font-black tracking-tight text-slate-900">Network Performance</h2>
-                      <p className="text-sm text-slate-500 font-bold uppercase tracking-wider mt-1">Impressions Over Time</p>
+                      <p className="text-sm text-slate-500 font-bold uppercase tracking-wider mt-1">Reach Over Time</p>
                     </div>
                   </div>
                   <div className="flex items-end gap-3 h-64">

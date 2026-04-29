@@ -38,12 +38,17 @@ const Register = () => {
   return (
     <div className="min-h-screen bg-slate-50 flex">
       {/* Left side — branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-indigo-600 flex-col p-12 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl opacity-40" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-sky-400/20 rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl opacity-25" />
+      <div className="hidden lg:flex lg:w-1/2 bg-slate-900 flex-col p-12 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-600/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl opacity-40" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl opacity-25" />
 
-        <div className="relative z-10 flex items-center">
-          <span className="text-white font-black text-xl tracking-tighter">JAAN ENTERTAINMENT</span>
+        <div className="relative z-10 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white/20">
+            <img src="/logo.jpg" alt="Logo" className="w-full h-full object-cover" />
+          </div>
+          <span className="text-white font-black text-xl tracking-tighter">
+            JAAN<span className="text-rose-600 font-bold ml-0.5">ENTERTAINMENT</span>
+          </span>
         </div>
 
         <div className="flex-1 flex flex-col justify-center">
@@ -52,9 +57,9 @@ const Register = () => {
               Launch your first campaign in under 5 minutes.
             </h2>
             <ul className="space-y-3 mt-6">
-              {['340+ premium screen locations', 'Real-time impressions tracking', 'Instant campaign activation', 'No setup fees'].map(item => (
-                <li key={item} className="flex items-center gap-3 text-indigo-100 text-sm font-medium">
-                  <CheckCircle size={16} className="text-emerald-400 shrink-0" />
+              {['340+ premium screen locations', 'Instant campaign activation', 'No setup fees'].map(item => (
+                <li key={item} className="flex items-center gap-3 text-indigo-50 text-sm font-medium">
+                  <CheckCircle size={16} className="text-white shrink-0 opacity-80" />
                   {item}
                 </li>
               ))}
@@ -70,8 +75,13 @@ const Register = () => {
           animate={{ opacity: 1, y: 0 }}
           className="max-w-sm w-full mx-auto"
         >
-          <div className="flex items-center mb-8 lg:hidden justify-center text-center">
-            <span className="font-black text-slate-900 text-xl tracking-tighter">JAAN ENTERTAINMENT</span>
+          <div className="flex items-center mb-8 lg:hidden justify-center text-center gap-3">
+            <div className="w-8 h-8 rounded-full overflow-hidden border border-slate-200">
+              <img src="/logo.jpg" alt="Logo" className="w-full h-full object-cover" />
+            </div>
+            <span className="font-black text-slate-900 text-xl tracking-tighter text-center">
+              JAAN<span className="text-rose-600 font-bold ml-0.5">ENTERTAINMENT</span>
+            </span>
           </div>
 
           <div className="mb-8">
@@ -127,9 +137,9 @@ const Register = () => {
             </div>
 
             {error && (
-              <div className="p-3 bg-rose-50 border border-rose-200 rounded-lg flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
-                <p className="text-xs font-semibold text-rose-700">{error}</p>
+              <div className="p-3 bg-indigo-50 border border-indigo-200 rounded-lg flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0" />
+                <p className="text-xs font-semibold text-indigo-700">{error}</p>
               </div>
             )}
 

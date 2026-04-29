@@ -93,10 +93,7 @@ const LaunchCampaign = () => {
     return sum + (loc ? (loc.price || 0) * (duration || 1) : 0);
   }, 0);
 
-  const estImpressions = selectedLocs.reduce((sum, name) => {
-    const loc = screens.find(l => l.name === name);
-    return sum + (loc ? (loc.impressions || 0) * (duration || 1) : 0);
-  }, 0);
+
 
   const toggleLoc = (name: string) => setSelectedLocs(p => p.includes(name) ? p.filter(l => l !== name) : [...p, name]);
   const closeAll = () => { setIsCalendarOpen(false); setIsEndCalendarOpen(false); setIsStartTimeOpen(false); setIsEndTimeOpen(false); };
@@ -365,7 +362,7 @@ const LaunchCampaign = () => {
                                   setSelectedLocs(newLocs);
                                   if (newLocs.length === 0) setStep(1);
                                 }}
-                                className="p-1 hover:bg-rose-50 hover:text-rose-600 rounded text-slate-400 transition-colors"
+                                className="p-1 hover:bg-indigo-50 hover:text-indigo-600 rounded text-slate-400 transition-colors"
                                 title="Remove screen"
                               >
                                 <X size={14} />
@@ -385,7 +382,6 @@ const LaunchCampaign = () => {
                         { label: 'Start', value: startDate ? `${new Date(startDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} · ${formatTimeAMPM(startTime)}` : '—' },
                         { label: 'End', value: endDate ? `${new Date(endDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })} · ${formatTimeAMPM(endTime)}` : '—' },
                         { label: 'Duration', value: duration ? `${duration.toFixed(1)} hours` : '—' },
-                        { label: 'Est. Impressions', value: estImpressions ? `${(estImpressions / 1000).toFixed(0)}K+` : '—' },
                       ].map(item => (
                         <div key={item.label} className="p-4 bg-slate-50 border border-slate-200 rounded-xl">
                           <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">{item.label}</p>
@@ -408,9 +404,9 @@ const LaunchCampaign = () => {
                   </div>
 
                   {error && (
-                    <div className="p-4 bg-rose-50 border border-rose-100 rounded-xl flex items-center gap-3">
-                      <div className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
-                      <p className="text-xs font-bold text-rose-700">{error}</p>
+                    <div className="p-4 bg-indigo-50 border border-indigo-100 rounded-xl flex items-center gap-3">
+                      <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0" />
+                      <p className="text-xs font-bold text-indigo-700">{error}</p>
                     </div>
                   )}
                 </div>

@@ -68,7 +68,6 @@ const Locations = () => {
   const [newLocation, setNewLocation] = useState({
     location: '',
     price: '',
-    impressions: '',
     status: 'Active',
     lat: 16.5062,
     lng: 80.6480
@@ -113,7 +112,6 @@ const Locations = () => {
       setNewLocation({
         location: '',
         price: '',
-        impressions: '',
         status: 'Active',
         lat: 16.5062,
         lng: 80.6480
@@ -141,7 +139,7 @@ const Locations = () => {
       <div className="border-b border-slate-200 bg-white px-6 py-6">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <p className="text-xs font-bold tracking-widest uppercase text-indigo-500 mb-1">Live Inventory</p>
+            <p className="text-xs font-bold tracking-widest uppercase text-indigo-600 mb-1">Live Inventory</p>
             <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">Premium Indian Screens</h1>
           </div>
           <div className="flex flex-wrap items-center gap-3">
@@ -207,50 +205,50 @@ const Locations = () => {
               </button>
             </div>
           ) : (
-            <AnimatePresence>
+            <AnimatePresence mode="popLayout">
               {filtered.map((bb, i) => (
                 <motion.div
                   key={bb.id}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: i * 0.04 }}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ delay: i * 0.03, duration: 0.4, ease: "easeOut" }}
                   onClick={() => focusBillboard(bb)}
-                  className={`px-5 py-4 border-b border-slate-100 cursor-pointer transition-all group ${
-                    selectedId === bb.id ? 'bg-indigo-50 border-l-2 border-l-indigo-500' : 'hover:bg-slate-50'
+                  className={`px-6 py-5 border-b border-slate-50 cursor-pointer transition-all duration-300 group relative ${
+                    selectedId === bb.id ? 'bg-indigo-50/50' : 'hover:bg-slate-50'
                   }`}
                 >
+                  {selectedId === bb.id && (
+                    <motion.div 
+                      layoutId="active-indicator"
+                      className="absolute left-0 top-0 bottom-0 w-1 bg-indigo-600 rounded-r-full"
+                    />
+                  )}
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <MapPin size={13} className={selectedId === bb.id ? 'text-indigo-500' : 'text-slate-400'} />
-                        <span className="text-sm font-bold text-slate-900 truncate">{bb.location}</span>
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <MapPin size={14} className={selectedId === bb.id ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-400 transition-colors'} />
+                        <span className={`text-sm font-bold truncate tracking-tight transition-colors ${selectedId === bb.id ? 'text-indigo-700' : 'text-slate-900'}`}>{bb.location}</span>
                       </div>
-                      <div className="flex items-center gap-3 mt-2">
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border uppercase tracking-wide ${
+                      <div className="flex items-center gap-3 mt-3">
+                        <span className={`text-[9px] font-black px-2.5 py-1 rounded-full border uppercase tracking-widest transition-all ${
                           bb.status === 'Active'
-                            ? 'text-emerald-700 bg-emerald-50 border-emerald-200'
-                            : 'text-amber-700 bg-amber-50 border-amber-200'
+                            ? 'text-emerald-700 bg-emerald-50 border-emerald-200 group-hover:bg-emerald-500 group-hover:text-white group-hover:border-emerald-500'
+                            : 'text-amber-700 bg-amber-50 border-amber-200 group-hover:bg-amber-500 group-hover:text-white group-hover:border-amber-500'
                         }`}>
                           {bb.status}
                         </span>
-                        <span className="text-xs text-slate-500 font-semibold">{bb.price}/hr</span>
+                        <span className="text-xs text-slate-500 font-bold bg-slate-100/50 px-2 py-0.5 rounded-md group-hover:bg-white transition-colors">{bb.price}/hr</span>
                       </div>
-                    </div>
-                    <div className="text-right shrink-0">
-                      <div className="flex items-center gap-1 justify-end text-xs font-semibold text-slate-700">
-                        <TrendingUp size={11} className="text-indigo-400" />
-                        {bb.impressions}
-                      </div>
-                      <p className="text-[10px] text-slate-400 font-medium mt-0.5">est. reach</p>
                     </div>
                   </div>
-                  <div className="mt-3 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className={`mt-4 flex items-center gap-2 transition-all duration-300 ${selectedId === bb.id ? 'opacity-100' : 'opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0'}`}>
                     <Link
                       to="/launch-campaign"
                       onClick={e => e.stopPropagation()}
-                      className="inline-flex items-center gap-1 text-xs font-bold text-indigo-600 hover:text-indigo-700 transition-colors"
+                      className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-indigo-600 hover:text-indigo-700 transition-colors"
                     >
-                      Deploy campaign <ChevronRight size={12} />
+                      Deploy campaign <ChevronRight size={14} />
                     </Link>
                   </div>
                 </motion.div>
@@ -260,7 +258,7 @@ const Locations = () => {
         </div>
 
         {/* Right: Map */}
-        <div className="flex-1 relative bg-slate-100 h-[60%] lg:h-full order-1 lg:order-2">
+        <div className="flex-1 relative bg-slate-100 h-[60%] lg:h-full order-1 lg:order-2 z-0">
           <MapContainer
             center={[mapCenter.lat, mapCenter.lng]}
             zoom={mapZoom}
@@ -311,10 +309,6 @@ const Locations = () => {
                         <div className="flex justify-between">
                           <span className="text-slate-500 font-medium">Rate:</span>
                           <span className="font-bold text-slate-900">{bb.price}/hr</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-500 font-medium">Est. Reach:</span>
-                          <span className="font-bold text-indigo-600">{bb.impressions}</span>
                         </div>
                       </div>
                       <Link
@@ -377,17 +371,6 @@ const Locations = () => {
                       value={newLocation.price}
                       onChange={e => setNewLocation({...newLocation, price: e.target.value})}
                       placeholder="₹5,000/hr"
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-sm focus:outline-none focus:border-indigo-500 transition-all"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Impressions (e.g. 1.5M)</label>
-                    <input 
-                      type="text" 
-                      required
-                      value={newLocation.impressions}
-                      onChange={e => setNewLocation({...newLocation, impressions: e.target.value})}
-                      placeholder="1.5M"
                       className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-sm focus:outline-none focus:border-indigo-500 transition-all"
                     />
                   </div>

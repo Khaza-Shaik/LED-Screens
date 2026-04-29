@@ -236,10 +236,7 @@
             "type": "string",
             "example": "₹5,000/hr"
           },
-          "impressions": {
-            "type": "string",
-            "example": "1.2M"
-          },
+
           "lat": {
             "type": "number",
             "format": "float"
@@ -259,7 +256,6 @@
         "required": [
           "location",
           "price",
-          "impressions",
           "lat",
           "lng"
         ],
@@ -270,9 +266,7 @@
           "price": {
             "type": "string"
           },
-          "impressions": {
-            "type": "string"
-          },
+
           "lat": {
             "type": "number",
             "format": "float"

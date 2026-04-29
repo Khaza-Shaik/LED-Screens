@@ -19,9 +19,9 @@ router.get('/', async (req, res) => {
 // @desc    Add a billboard (Admin only)
 router.post('/', auth, async (req, res) => {
   if (req.user.role !== 'admin') return res.status(403).json({ msg: 'Not authorized' });
-  const { location, status, price, impressions, lat, lng, image } = req.body;
+  const { location, status, price, lat, lng, image } = req.body;
   try {
-    const newBillboard = new Billboard({ location, status, price, impressions, lat, lng, image });
+    const newBillboard = new Billboard({ location, status, price, lat, lng, image });
     const billboard = await newBillboard.save();
     res.json(billboard);
   } catch (err) {

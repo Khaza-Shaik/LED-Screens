@@ -2,7 +2,7 @@ import { BarChart3, Eye, MousePointerClick, TrendingUp, ArrowUpRight, ArrowDownR
 import { motion } from 'framer-motion';
 
 const stats = [
-  { label: 'Total Impressions', value: '24.6M', change: '+18.4%', up: true, icon: Eye },
+  { label: 'Total Reach', value: '24.6M', change: '+18.4%', up: true, icon: Eye },
   { label: 'Avg Engagement Rate', value: '7.3%', change: '+2.1%', up: true, icon: MousePointerClick },
   { label: 'Conversions', value: '14.2K', change: '-3.2%', up: false, icon: TrendingUp },
   { label: 'Revenue Generated', value: '₹42.8L', change: '+24.6%', up: true, icon: BarChart3 },
@@ -42,7 +42,7 @@ const Analytics = () => {
                 </div>
               </div>
               <p className="text-2xl font-extrabold tracking-tight text-slate-900 mb-2">{value}</p>
-              <div className={`inline-flex items-center gap-1 text-xs font-bold ${up ? 'text-emerald-600' : 'text-rose-500'}`}>
+              <div className={`inline-flex items-center gap-1 text-xs font-bold ${up ? 'text-emerald-600' : 'text-indigo-500'}`}>
                 {up ? <ArrowUpRight size={13} /> : <ArrowDownRight size={13} />}
                 {change} vs last period
               </div>
@@ -54,7 +54,7 @@ const Analytics = () => {
         <div className="bg-white border border-slate-200 rounded-xl p-8">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-lg font-bold text-slate-900">Impressions Over Time</h2>
+              <h2 className="text-lg font-bold text-slate-900">Reach Over Time</h2>
               <p className="text-sm text-slate-500 font-medium mt-0.5">Monthly campaign reach across all screens</p>
             </div>
             <div className="flex items-center gap-2 px-3 py-1.5 bg-indigo-50 border border-indigo-100 rounded-lg">

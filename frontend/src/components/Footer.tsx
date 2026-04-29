@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 const Footer = () => {
   const userRole = localStorage.getItem('userRole');
@@ -31,9 +32,14 @@ const Footer = () => {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-10 mb-14">
           {/* Brand */}
           <div className="col-span-2 md:col-span-2">
-            <Link to="/" className="inline-flex items-center mb-5 group">
-              <span className="text-[18px] font-black tracking-tight text-slate-900 group-hover:text-indigo-600 transition-colors">
-                JAAN<span className="text-indigo-600 font-bold ml-0.5">ENTERTAINMENT</span>
+            <Link to="/" className="inline-flex items-center mb-5 group gap-3">
+              <div className="w-8 h-8 rounded-full overflow-hidden border border-slate-200">
+                <img src="/logo.jpg" alt="Logo" className="w-full h-full object-cover" />
+              </div>
+              <span className="text-[18px] font-black tracking-tight text-white transition-colors flex items-center overflow-hidden relative drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
+                JAAN<span className="text-rose-600 font-bold ml-1 relative overflow-hidden inline-flex items-center px-1 drop-shadow-none h-full">
+                  ENTERTAINMENT
+                </span>
               </span>
             </Link>
             <p className="text-sm text-slate-500 font-medium leading-relaxed mb-6 max-w-xs">

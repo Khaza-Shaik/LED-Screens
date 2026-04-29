@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -30,18 +31,28 @@ const Navbar = () => {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
+        className={`fixed top-0 left-0 right-0 z-[9999] transition-all duration-300 ${
           scrolled
-            ? 'bg-white/90 backdrop-blur-xl border-b border-slate-200 shadow-sm py-3'
+            ? 'bg-white shadow-[0_4px_30px_rgba(0,0,0,0.05)] py-3 border-b border-slate-100'
             : 'bg-transparent py-4'
         }`}
       >
         <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center group">
-            <span className="text-[18px] font-black tracking-tight text-slate-900 group-hover:text-indigo-600 transition-colors">
-              JAAN<span className="text-indigo-600 font-bold ml-0.5">ENTERTAINMENT</span>
-            </span>
+          <Link to="/" className="flex items-center gap-3 group">
+            <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-indigo-100 group-hover:border-indigo-500 transition-all">
+              <img src="/logo.jpg" alt="Jaan Logo" className="w-full h-full object-cover" />
+            </div>
+            <motion.span 
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+            >
+              <span className="text-[18px] font-black tracking-tight text-white transition-colors flex items-center overflow-hidden relative drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
+                JAAN<span className="text-rose-600 font-bold ml-1 relative overflow-hidden inline-flex items-center px-1 drop-shadow-none h-full">
+                  ENTERTAINMENT
+                </span>
+              </span>
+            </motion.span>
           </Link>
 
           {/* Desktop Nav */}
@@ -50,10 +61,10 @@ const Navbar = () => {
               <Link
                 key={link.to}
                 to={link.to}
-                className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
+                className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${
                   isActive(link.to)
                     ? 'text-indigo-600 bg-indigo-50'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                    : scrolled ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-50' : 'text-slate-700 hover:text-slate-900 hover:bg-slate-50'
                 }`}
               >
                 {link.label}
@@ -62,8 +73,10 @@ const Navbar = () => {
             {userRole === 'admin' && (
               <Link
                 to="/admin"
-                className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
-                  isActive('/admin') ? 'text-indigo-600 bg-indigo-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${
+                  isActive('/admin') 
+                    ? 'text-indigo-600 bg-indigo-50' 
+                    : scrolled ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-50' : 'text-slate-700 hover:text-slate-900 hover:bg-slate-50'
                 }`}
               >
                 Admin
@@ -76,21 +89,27 @@ const Navbar = () => {
             {!token ? (
               <Link
                 to="/login"
-                className="px-4 py-2 text-sm font-semibold text-slate-700 hover:text-slate-900 transition-colors"
+                className={`px-4 py-2 text-sm font-bold transition-colors ${scrolled ? 'text-slate-600 hover:text-slate-900' : 'text-slate-700 hover:text-slate-900'}`}
               >
                 Sign in
               </Link>
             ) : null}
             <Link
               to="/launch-campaign"
-              className="px-5 py-2.5 bg-indigo-600 text-white text-sm font-bold rounded-xl hover:bg-indigo-700 transition-all shadow-sm hover:shadow-md active:scale-[0.98]"
+              className={`px-5 py-2.5 text-white text-sm font-bold rounded-xl transition-all shadow-sm hover:shadow-md active:scale-[0.98] ${
+                scrolled ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-indigo-600 hover:bg-indigo-700'
+              }`}
             >
               Book your slot
             </Link>
             {token && (
               <button
                 onClick={() => { localStorage.removeItem('token'); navigate('/login'); }}
-                className="px-4 py-2 bg-white text-slate-700 border border-slate-200 text-sm font-semibold rounded-lg hover:bg-slate-50 transition-all shadow-sm"
+                className={`px-4 py-2 text-sm font-bold rounded-lg transition-all border shadow-sm ${
+                  scrolled 
+                    ? 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50' 
+                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                }`}
               >
                 Sign out
               </button>
@@ -117,7 +136,7 @@ const Navbar = () => {
                 <Link
                   key={link.to}
                   to={link.to}
-                  className={`px-4 py-3 rounded-lg text-sm font-semibold transition-all ${
+                  className={`px-4 py-3 rounded-lg text-sm font-bold transition-all ${
                     isActive(link.to) ? 'text-indigo-600 bg-indigo-50' : 'text-slate-700 hover:bg-slate-50'
                   }`}
                 >
@@ -127,7 +146,7 @@ const Navbar = () => {
               {userRole === 'admin' && (
                 <Link
                   to="/admin"
-                  className={`px-4 py-3 rounded-lg text-sm font-semibold transition-all ${
+                  className={`px-4 py-3 rounded-lg text-sm font-bold transition-all ${
                     isActive('/admin') ? 'text-indigo-600 bg-indigo-50' : 'text-slate-700 hover:bg-slate-50'
                   }`}
                 >
@@ -137,15 +156,15 @@ const Navbar = () => {
             </nav>
             <div className="flex flex-col gap-3">
               {!token ? (
-                <Link to="/login" className="block text-center py-3 rounded-lg border border-slate-200 text-sm font-semibold text-slate-700">
+                <Link to="/login" className="block text-center py-3 rounded-lg border border-slate-200 text-sm font-bold text-slate-700">
                   Sign in
                 </Link>
               ) : null}
-              <Link to="/launch-campaign" className="block text-center py-4 rounded-xl bg-indigo-600 text-white text-sm font-bold active:scale-[0.98] transition-transform">
+              <Link to="/launch-campaign" className="block text-center py-4 rounded-xl bg-indigo-600 text-white text-sm font-black active:scale-[0.98] transition-transform shadow-lg shadow-indigo-200">
                 Book your slot
               </Link>
               {token && (
-                <button onClick={() => { localStorage.removeItem('token'); navigate('/login'); }} className="block w-full text-center py-3 rounded-lg border border-slate-200 text-sm font-semibold text-slate-700 bg-white shadow-sm">
+                <button onClick={() => { localStorage.removeItem('token'); navigate('/login'); }} className="block w-full text-center py-3 rounded-lg border border-slate-200 text-sm font-bold text-slate-700 bg-white shadow-sm">
                   Sign out
                 </button>
               )}

@@ -9,7 +9,7 @@ const statusStyles = {
   approved: 'bg-indigo-50 text-indigo-700 border-indigo-100',
   completed: 'bg-slate-50 text-slate-600 border-slate-200',
   pending: 'bg-amber-50 text-amber-700 border-amber-100',
-  rejected: 'bg-rose-50 text-rose-700 border-rose-100',
+  rejected: 'bg-indigo-50 text-indigo-700 border-indigo-100',
 };
 
 const MyBookings = () => {

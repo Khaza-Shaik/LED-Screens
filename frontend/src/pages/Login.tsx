@@ -36,13 +36,18 @@ const Login = () => {
   return (
     <div className="flex-1 bg-slate-50 flex items-center justify-center p-6 lg:p-12 overflow-hidden">
       <div className="w-full max-w-7xl h-full max-h-[850px] flex gap-[30px] transition-all duration-500">
-      <div className="hidden lg:flex flex-1 bg-gradient-to-br from-indigo-600 via-indigo-700 to-violet-800 rounded-[30px] flex-col p-12 relative overflow-hidden shadow-2xl shadow-indigo-200/50">
+      <div className="hidden lg:flex flex-1 bg-gradient-to-br from-slate-800 via-slate-900 to-black rounded-[30px] flex-col p-12 relative overflow-hidden shadow-2xl shadow-slate-200/50">
         {/* Decorations */}
         <div className="absolute top-0 right-0 w-80 h-80 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-sky-400/20 rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl" />
 
-        <div className="relative z-10 flex items-center">
-          <span className="text-white font-black text-2xl tracking-tighter">JAAN ENTERTAINMENT</span>
+        <div className="relative z-10 flex items-center gap-3">
+          <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white/20">
+            <img src="/logo.jpg" alt="Logo" className="w-full h-full object-cover" />
+          </div>
+          <span className="text-white font-black text-2xl tracking-tighter">
+            JAAN<span className="text-rose-600 font-bold ml-0.5">ENTERTAINMENT</span>
+          </span>
         </div>
 
         <div className="flex-1 flex flex-col justify-center">
@@ -55,7 +60,7 @@ const Login = () => {
             </p>
             <div className="flex items-center gap-5">
               <div className="flex -space-x-3">
-                {['bg-sky-400', 'bg-emerald-400', 'bg-amber-400', 'bg-rose-400'].map((c, i) => (
+                {['bg-sky-400', 'bg-emerald-400', 'bg-amber-400', 'bg-white/40'].map((c, i) => (
                   <div key={i} className={`w-10 h-10 ${c} rounded-full border-2 border-indigo-600 shadow-lg`} />
                 ))}
               </div>
@@ -73,8 +78,13 @@ const Login = () => {
           className="max-w-md w-full mx-auto"
         >
           {/* Mobile logo */}
-          <div className="flex items-center mb-10 lg:hidden text-center justify-center">
-            <span className="font-black text-slate-900 text-2xl tracking-tighter">JAAN ENTERTAINMENT</span>
+          <div className="flex items-center mb-10 lg:hidden text-center justify-center gap-3">
+            <div className="w-10 h-10 rounded-full overflow-hidden border border-slate-200">
+              <img src="/logo.jpg" alt="Logo" className="w-full h-full object-cover" />
+            </div>
+            <span className="font-black text-white text-xl tracking-tighter text-center">
+              JAAN<span className="text-rose-600 font-bold ml-0.5">ENTERTAINMENT</span>
+            </span>
           </div>
 
           <div className="mb-10">
@@ -114,9 +124,9 @@ const Login = () => {
             </div>
 
             {error && (
-              <motion.div initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} className="p-4 bg-rose-50 border border-rose-100 rounded-xl flex items-center gap-3">
-                <div className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
-                <p className="text-xs font-bold text-rose-700">{error}</p>
+              <motion.div initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} className="p-4 bg-indigo-50 border border-indigo-100 rounded-xl flex items-center gap-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0" />
+                <p className="text-xs font-bold text-indigo-700">{error}</p>
               </motion.div>
             )}
 

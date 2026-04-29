@@ -153,7 +153,7 @@ components:
         price:
           type: string
           example: "₹5,000/hr"
-        impressions:
+
           type: string
           example: "1.2M"
         lat:
@@ -171,7 +171,6 @@ components:
       required:
         - location
         - price
-        - impressions
         - lat
         - lng
       properties:
@@ -179,7 +178,7 @@ components:
           type: string
         price:
           type: string
-        impressions:
+
           type: string
         lat:
           type: number

@@ -18,9 +18,9 @@ router.get('/', async (req, res) => {
 // @desc    Add a screen (Admin only)
 router.post('/', auth, async (req, res) => {
   if (req.user.role !== 'admin') return res.status(403).json({ msg: 'Not authorized' });
-  const { name, location, deviceId, price, impressions } = req.body;
+  const { name, location, deviceId, price } = req.body;
   try {
-    const newScreen = new Screen({ name, location, deviceId, price, impressions });
+    const newScreen = new Screen({ name, location, deviceId, price });
     const screen = await newScreen.save();
     res.json(screen);
   } catch (err) {
