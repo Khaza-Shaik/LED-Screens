@@ -36,8 +36,9 @@ const Footer = () => {
               <div className="w-8 h-8 rounded-full overflow-hidden border border-slate-200">
                 <img src="/logo.jpg" alt="Logo" className="w-full h-full object-cover" />
               </div>
-              <span className="text-[18px] font-black tracking-tight text-white transition-colors flex items-center overflow-hidden relative drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
-                JAAN<span className="text-rose-600 font-bold ml-1 relative overflow-hidden inline-flex items-center px-1 drop-shadow-none h-full">
+              <span className="text-[18px] font-black tracking-tight text-white transition-colors flex items-center overflow-hidden relative">
+                <span className="drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">JAAN</span>
+                <span className="text-rose-600 font-bold ml-1 relative overflow-hidden inline-flex items-center px-1 h-full">
                   ENTERTAINMENT
                 </span>
               </span>

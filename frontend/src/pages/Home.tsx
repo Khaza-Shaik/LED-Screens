@@ -67,66 +67,98 @@ const Home = () => {
 
       {/* ─── Hero ──────────────────────────────────────────── */}
       <section className="pt-36 pb-28 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="max-w-4xl">
-            {/* Eyebrow */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
-              className="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-50 border border-indigo-100 rounded-full mb-8"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
-              <span className="text-xs font-semibold text-indigo-700 tracking-wide">India's #1 Entertainment Ad-Network</span>
-            </motion.div>
-
-            {/* H1 */}
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-              className="text-5xl md:text-[72px] font-extrabold tracking-tight text-slate-900 leading-[1.05] mb-6"
-            >
-              Reach Billions.<br />
-              <motion.span 
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4, duration: 0.8 }}
-                className="text-slate-900 relative inline-block"
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col lg:flex-row items-center gap-16">
+            <div className="flex-1">
+              {/* Eyebrow */}
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+                className="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-50 border border-indigo-100 rounded-full mb-8"
               >
-                Everywhere They Go.
-              </motion.span>
-            </motion.h1>
+                <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
+                <span className="text-xs font-semibold text-indigo-700 tracking-wide">India's #1 Entertainment Ad-Network</span>
+              </motion.div>
 
-            {/* Subtitle */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-              className="text-xl text-slate-500 font-medium max-w-2xl mb-10 leading-relaxed"
-            >
-              Deploy, manage, and optimize digital billboard campaigns across India's premium outdoor inventory — in real-time, from the <span className="text-slate-900 font-bold">Jaan Entertainment</span> dashboard.
-            </motion.p>
+              {/* H1 */}
+              <motion.h1
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                className="text-5xl md:text-[64px] font-extrabold tracking-tight text-slate-900 leading-[1.05] mb-6"
+              >
+                Reach Billions.<br />
+                <motion.span 
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.4, duration: 0.8 }}
+                  className="text-slate-900 relative inline-block"
+                >
+                  Everywhere They Go.
+                </motion.span>
+              </motion.h1>
 
-            {/* CTAs */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.15 }}
-              className="flex flex-wrap items-center gap-4"
+              {/* Subtitle */}
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.6 }}
+                className="text-xl text-slate-500 font-medium mb-10 leading-relaxed"
+              >
+                Deploy, manage, and optimize digital billboard campaigns across India's premium outdoor inventory — in real-time, from the <span className="text-slate-900 font-bold">Jaan Entertainment</span> dashboard.
+              </motion.p>
+
+              {/* CTAs */}
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.15 }}
+                className="flex flex-wrap items-center gap-4"
+              >
+                <Link
+                  to="/launch-campaign"
+                  className="inline-flex items-center gap-2 px-8 py-4 bg-indigo-600 text-white font-bold rounded-2xl hover:bg-indigo-700 transition-all shadow-[0_4px_20px_0_rgba(225,29,72,0.35)] hover:shadow-[0_8px_30px_0_rgba(225,29,72,0.45)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
+                >
+                  Book your slot <ArrowRight size={20} />
+                </Link>
+                <Link
+                  to="/locations"
+                  className="inline-flex items-center gap-2 px-6 py-3.5 bg-white text-slate-800 font-semibold rounded-xl border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all"
+                >
+                  Browse Inventory <ChevronRight size={18} className="text-slate-400" />
+                </Link>
+              </motion.div>
+            </div>
+
+            {/* Hero Image Showcase */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.8, x: 40 }}
+              animate={{ opacity: 1, scale: 1, x: 0 }}
+              transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+              className="flex-1 relative w-full max-w-[600px]"
             >
-              <Link
-                to="/launch-campaign"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-indigo-600 text-white font-bold rounded-2xl hover:bg-indigo-700 transition-all shadow-[0_4px_20px_0_rgba(225,29,72,0.35)] hover:shadow-[0_8px_30px_0_rgba(225,29,72,0.45)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
-              >
-                Book your slot <ArrowRight size={20} />
-              </Link>
-              <Link
-                to="/locations"
-                className="inline-flex items-center gap-2 px-6 py-3.5 bg-white text-slate-800 font-semibold rounded-xl border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all"
-              >
-                Browse Inventory <ChevronRight size={18} className="text-slate-400" />
-              </Link>
+              <div className="relative p-2 bg-white rounded-[32px] shadow-[0_20px_80px_-15px_rgba(0,0,0,0.1)] border border-slate-100 overflow-hidden">
+                <motion.img 
+                  animate={{ y: [0, -10, 0] }}
+                  transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                  src="/hero-showcase.png" 
+                  alt="Jaan Entertainment Showcase" 
+                  className="w-full h-auto rounded-[24px] object-cover"
+                />
+                
+                {/* Decorative floating elements */}
+                <motion.div 
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                  className="absolute -top-12 -right-12 w-32 h-32 bg-indigo-500/5 blur-3xl rounded-full"
+                />
+                <motion.div 
+                  animate={{ rotate: -360 }}
+                  transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                  className="absolute -bottom-16 -left-16 w-48 h-48 bg-rose-500/5 blur-3xl rounded-full"
+                />
+              </div>
             </motion.div>
           </div>
 

@@ -2,13 +2,27 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trash2, Plus, Clock, ShieldCheck, Monitor, Play, CheckCircle, LayoutGrid, ListFilter, IndianRupee, Edit2, BarChart3, Eye, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import API from '../services/api';
 
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+const DefaultIcon = L.icon({ iconUrl: icon, shadowUrl: iconShadow, iconSize: [25, 41], iconAnchor: [12, 41] });
+L.Marker.prototype.options.icon = DefaultIcon;
+
+function AdminMapEvents({ onMapClick }: { onMapClick: (lat: number, lng: number) => void }) {
+  useMapEvents({ click(e) { onMapClick(e.latlng.lat, e.latlng.lng); } });
+  return null;
+}
+
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState<'approvals' | 'screens' | 'analytics'>('approvals');
+  const [activeTab, setActiveTab] = useState<'approvals' | 'screens' | 'analytics' | 'plans'>('approvals');
   const [screens, setScreens] = useState<any[]>([]);
   const [schedules, setSchedules] = useState<any[]>([]);
-  const [form, setForm] = useState({ name: '', location: '', deviceId: '', price: '' });
+  const [plans, setPlans] = useState<any[]>([]);
+  const [form, setForm] = useState({ name: '', city: '', state: '', deviceId: '', price: '', lat: 16.5062, lng: 80.6480 });
 
   useEffect(() => {
     fetchData();
@@ -16,12 +30,14 @@ const AdminDashboard = () => {
 
   const fetchData = async () => {
     try {
-      const [screensRes, schedulesRes] = await Promise.all([
+      const [screensRes, schedulesRes, plansRes] = await Promise.all([
         API.get('/screens'),
-        API.get('/schedule')
+        API.get('/schedule'),
+        API.get('/plans')
       ]);
       setScreens(screensRes.data);
       setSchedules(schedulesRes.data);
+      setPlans(plansRes.data);
     } catch (err) {
       console.error('Fetch failed');
     }
@@ -46,11 +62,17 @@ const AdminDashboard = () => {
     try {
       await API.post('/screens', { 
         ...form, 
-        price: Number(form.price)
+        location: `${form.city}, ${form.state}`,
+        price: Number(form.price),
+        lat: Number(form.lat),
+        lng: Number(form.lng)
       });
-      setForm({ name: '', location: '', deviceId: '', price: '' });
+      setForm({ name: '', city: '', state: '', deviceId: '', price: '', lat: 16.5062, lng: 80.6480 });
       fetchData();
-    } catch (err) { alert('Failed to create screen'); }
+    } catch (err: any) { 
+      const errMsg = err.response?.data?.msg || err.message || 'Failed to create screen';
+      alert(`Error: ${errMsg}`); 
+    }
   };
 
   const handleDeleteScreen = async (id: string) => {
@@ -62,7 +84,7 @@ const AdminDashboard = () => {
   };
 
   const handleUpdatePrice = async (id: string, currentPrice: number) => {
-    const newPrice = prompt('Enter new price per day (₹):', (currentPrice || 0).toString());
+    const newPrice = prompt('Enter new price per hr (₹):', (currentPrice || 0).toString());
     if (newPrice === null || isNaN(Number(newPrice))) return;
     
     try {
@@ -141,6 +163,12 @@ const AdminDashboard = () => {
             >
               <BarChart3 size={16} /> Analytics
             </button>
+            <button 
+              onClick={() => setActiveTab('plans')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === 'plans' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+            >
+              <IndianRupee size={16} /> Plans
+            </button>
           </div>
         </div>
       </div>
@@ -215,66 +243,118 @@ const AdminDashboard = () => {
             </motion.div>
           ) : activeTab === 'screens' ? (
             <motion.div key="screens" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="flex flex-col gap-8">
                 {/* Screen Form */}
-                <div className="lg:col-span-1">
+                <div>
                    <div className="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm">
                       <h2 className="text-lg font-black tracking-tight mb-6 flex items-center gap-2">
                         <Plus size={20} className="text-indigo-500" /> New Screen Asset
                       </h2>
-                      <form onSubmit={handleCreateScreen} className="space-y-5">
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Screen Name</label>
-                          <input 
-                            value={form.name}
-                            onChange={e => setForm({...form, name: e.target.value})}
-                            placeholder="e.g. MG Road LED"
-                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-sm focus:outline-none focus:border-indigo-500"
-                            required
-                          />
+                      <form onSubmit={handleCreateScreen} className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div className="space-y-5">
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Area Name</label>
+                            <input 
+                              value={form.name}
+                              onChange={e => setForm({...form, name: e.target.value})}
+                              placeholder="e.g. MG Road LED"
+                              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-sm focus:outline-none focus:border-indigo-500"
+                              required
+                            />
+                          </div>
+                          <div className="flex gap-4">
+                            <div className="space-y-2 flex-1">
+                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">City</label>
+                              <input 
+                                value={form.city}
+                                onChange={e => setForm({...form, city: e.target.value})}
+                                placeholder="e.g. Vijayawada"
+                                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-sm focus:outline-none focus:border-indigo-500"
+                                required
+                              />
+                            </div>
+                            <div className="space-y-2 flex-1">
+                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">State</label>
+                              <input 
+                                value={form.state}
+                                onChange={e => setForm({...form, state: e.target.value})}
+                                placeholder="e.g. AP"
+                                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-sm focus:outline-none focus:border-indigo-500"
+                                required
+                              />
+                            </div>
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Device ID</label>
+                            <input 
+                              value={form.deviceId}
+                              onChange={e => setForm({...form, deviceId: e.target.value})}
+                              placeholder="e.g. screen_001"
+                              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-sm focus:outline-none focus:border-indigo-500"
+                              required
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Price per hr (₹)</label>
+                            <input 
+                              type="number"
+                              value={form.price}
+                              onChange={e => setForm({...form, price: e.target.value})}
+                              placeholder="e.g. 500"
+                              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-sm focus:outline-none focus:border-indigo-500"
+                              required
+                            />
+                          </div>
+                          <div className="flex gap-4">
+                            <div className="space-y-2 flex-1">
+                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Latitude</label>
+                              <input 
+                                type="number"
+                                step="any"
+                                value={form.lat}
+                                onChange={e => setForm({...form, lat: parseFloat(e.target.value) || 0})}
+                                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-sm focus:outline-none focus:border-indigo-500"
+                                required
+                              />
+                            </div>
+                            <div className="space-y-2 flex-1">
+                              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Longitude</label>
+                              <input 
+                                type="number"
+                                step="any"
+                                value={form.lng}
+                                onChange={e => setForm({...form, lng: parseFloat(e.target.value) || 0})}
+                                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-sm focus:outline-none focus:border-indigo-500"
+                                required
+                              />
+                            </div>
+                          </div>
+                          <button className="w-full py-4 bg-indigo-600 text-white font-black text-xs uppercase tracking-widest rounded-xl hover:bg-indigo-700 shadow-xl shadow-indigo-500/20 transition-all">
+                            Provision Screen
+                          </button>
                         </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Location</label>
-                          <input 
-                            value={form.location}
-                            onChange={e => setForm({...form, location: e.target.value})}
-                            placeholder="e.g. Vijayawada, AP"
-                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-sm focus:outline-none focus:border-indigo-500"
-                            required
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Device ID</label>
-                          <input 
-                            value={form.deviceId}
-                            onChange={e => setForm({...form, deviceId: e.target.value})}
-                            placeholder="e.g. screen_001"
-                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-sm focus:outline-none focus:border-indigo-500"
-                            required
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Price per Day (₹)</label>
-                          <input 
-                            type="number"
-                            value={form.price}
-                            onChange={e => setForm({...form, price: e.target.value})}
-                            placeholder="e.g. 500"
-                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-sm focus:outline-none focus:border-indigo-500"
-                            required
-                          />
-                        </div>
-                        <button className="w-full py-4 bg-indigo-600 text-white font-black text-xs uppercase tracking-widest rounded-xl hover:bg-indigo-700 shadow-xl shadow-indigo-500/20 transition-all">
-                          Provision Screen
-                        </button>
-                      </form>
-                   </div>
-                </div>
 
-                {/* Screen Grid */}
-                <div className="lg:col-span-2">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {screens.map(screen => (
+                        {/* Map Column */}
+                        <div className="space-y-2 flex flex-col h-full">
+                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                            Select Location <span className="text-indigo-500 lowercase normal-case">(Click on map)</span>
+                          </label>
+                          <div className="flex-1 min-h-[300px] rounded-xl overflow-hidden border border-slate-200 relative z-0">
+                            <MapContainer center={[form.lat || 16.5062, form.lng || 80.6480]} zoom={12} style={{ height: '100%', width: '100%' }}>
+                              <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
+                              <AdminMapEvents onMapClick={(lat, lng) => setForm(prev => ({ ...prev, lat, lng }))} />
+                              <Marker position={[form.lat || 16.5062, form.lng || 80.6480]} />
+                            </MapContainer>
+                          </div>
+                        </div>
+                    </form>
+                 </div>
+              </div>
+
+              {/* Screen Grid */}
+              <div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {screens.map(screen => (
                       <div key={screen._id} className="bg-white rounded-3xl border border-slate-200 p-6 hover:shadow-xl hover:shadow-slate-200/50 transition-all group relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-50 rounded-full translate-x-1/2 -translate-y-1/2 -z-10" />
                         <div className="flex items-start justify-between mb-6">
@@ -296,7 +376,7 @@ const AdminDashboard = () => {
                         <div className="flex items-center gap-2 mb-6 bg-slate-50 w-fit px-3 py-1.5 rounded-lg border border-slate-100">
                            <IndianRupee size={12} className="text-indigo-600" />
                            <span className="text-sm font-black text-slate-700">{screen.price || 0}</span>
-                           <span className="text-[10px] font-bold text-slate-400 uppercase">/ Day</span>
+                           <span className="text-[10px] font-bold text-slate-400 uppercase">/ hr</span>
                         </div>
                         
                         <div className="flex items-center justify-between pt-6 border-t border-slate-50">
@@ -318,7 +398,7 @@ const AdminDashboard = () => {
                 </div>
               </div>
             </motion.div>
-          ) : (
+          ) : activeTab === 'analytics' ? (
             <motion.div key="analytics" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
               <div className="grid grid-cols-1 gap-8">
                 {/* Stat Cards */}
@@ -369,7 +449,105 @@ const AdminDashboard = () => {
                 </div>
               </div>
             </motion.div>
-          )}
+          ) : activeTab === 'plans' ? (
+            <motion.div key="plans" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+              <div className="grid grid-cols-1 gap-6">
+                <div className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm p-6">
+                  <div className="flex items-center gap-3 border-b border-slate-100 pb-4 mb-6">
+                    <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600">
+                      <IndianRupee size={20} />
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-black tracking-tight text-slate-900">Pricing Plans Management</h2>
+                      <p className="text-sm font-bold text-slate-400 uppercase tracking-wider">Update public pricing and features</p>
+                    </div>
+                  </div>
+
+                  {plans.length === 0 ? (
+                    <div className="text-center py-10 text-slate-500 font-medium">Loading plans or no plans available.</div>
+                  ) : (
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                      {plans.map((plan) => (
+                        <div key={plan._id} className="bg-slate-50 rounded-2xl border border-slate-200 p-6 flex flex-col gap-4">
+                          <div className="flex justify-between items-center">
+                            <h3 className="text-lg font-black text-slate-900 tracking-tight">{plan.name}</h3>
+                            {plan.badge && <span className="px-2 py-1 bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest rounded-md">{plan.badge}</span>}
+                          </div>
+                          
+                          <div>
+                            <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Price</label>
+                            <div className="flex items-center gap-2">
+                              <input 
+                                type="text" 
+                                defaultValue={plan.price} 
+                                id={`price-${plan._id}`}
+                                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+                              />
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Duration</label>
+                            <input 
+                              type="text" 
+                              defaultValue={plan.duration} 
+                              id={`duration-${plan._id}`}
+                              placeholder="/month, /week, etc."
+                              className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+                            />
+                          </div>
+                          
+                          <div>
+                            <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Description</label>
+                            <textarea 
+                              defaultValue={plan.desc} 
+                              id={`desc-${plan._id}`}
+                              rows={2}
+                              className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm font-medium focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none resize-none"
+                            />
+                          </div>
+
+                          <div className="flex-1">
+                            <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Features (comma separated)</label>
+                            <textarea 
+                              defaultValue={plan.features.join(', ')} 
+                              id={`features-${plan._id}`}
+                              rows={3}
+                              className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm font-medium focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none resize-none"
+                            />
+                          </div>
+
+                          <button 
+                            onClick={async () => {
+                              const newPrice = (document.getElementById(`price-${plan._id}`) as HTMLInputElement).value;
+                              const newDuration = (document.getElementById(`duration-${plan._id}`) as HTMLInputElement).value;
+                              const newDesc = (document.getElementById(`desc-${plan._id}`) as HTMLTextAreaElement).value;
+                              const newFeatures = (document.getElementById(`features-${plan._id}`) as HTMLTextAreaElement).value.split(',').map(f => f.trim()).filter(f => f);
+                              
+                              try {
+                                await API.put(`/plans/${plan._id}`, {
+                                  price: newPrice,
+                                  duration: newDuration,
+                                  desc: newDesc,
+                                  features: newFeatures
+                                });
+                                alert('Plan updated successfully!');
+                              } catch (err) {
+                                alert('Failed to update plan');
+                              }
+                            }}
+                            className="mt-2 w-full py-3 bg-indigo-600 text-white text-xs font-black uppercase tracking-widest rounded-xl hover:bg-indigo-700 transition-all shadow-sm active:scale-[0.98]"
+                          >
+                            Save Changes
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          ) : null}
         </AnimatePresence>
       </div>
     </div>

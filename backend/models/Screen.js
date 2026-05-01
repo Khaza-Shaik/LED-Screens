@@ -6,6 +6,8 @@ const ScreenSchema = new mongoose.Schema({
   deviceId: { type: String, required: true, unique: true },
   status: { type: String, enum: ['online', 'offline'], default: 'offline' },
   price: { type: Number, default: 0 },
+  lat: { type: Number, default: 16.5062 }, // Default to Vijayawada center
+  lng: { type: Number, default: 80.6480 },
   lastSeen: { type: Date, default: Date.now },
   createdAt: { type: Date, default: Date.now }
 });

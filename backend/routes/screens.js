@@ -18,13 +18,14 @@ router.get('/', async (req, res) => {
 // @desc    Add a screen (Admin only)
 router.post('/', auth, async (req, res) => {
   if (req.user.role !== 'admin') return res.status(403).json({ msg: 'Not authorized' });
-  const { name, location, deviceId, price } = req.body;
+  const { name, location, deviceId, price, lat, lng } = req.body;
   try {
-    const newScreen = new Screen({ name, location, deviceId, price });
+    const newScreen = new Screen({ name, location, deviceId, price, lat, lng });
     const screen = await newScreen.save();
     res.json(screen);
   } catch (err) {
-    res.status(500).send('Server error');
+    console.error('Error in POST /screens:', err);
+    res.status(500).json({ msg: err.message || 'Server error' });
   }
 });
 

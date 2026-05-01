@@ -1,8 +1,9 @@
 import { Check, Sparkles, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 
-const plans = [
+const defaultPlans = [
   {
     name: 'Starter',
     badge: null,
@@ -36,6 +37,28 @@ const plans = [
 ];
 
 const Pricing = () => {
+  const [plans, setPlans] = useState(defaultPlans);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/plans');
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.length > 0) {
+            setPlans(data);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to fetch plans, using defaults:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPlans();
+  }, []);
+
   return (
     <div className="app-bg min-h-screen pt-24 pb-24 px-6">
       <div className="max-w-6xl mx-auto">

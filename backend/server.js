@@ -13,6 +13,7 @@ const Billboard = require('./models/Billboard');
 const Screen = require('./models/Screen');
 const Video = require('./models/Video');
 const Schedule = require('./models/Schedule');
+const Plan = require('./models/Plan');
 
 const app = express();
 const server = http.createServer(app);
@@ -62,6 +63,48 @@ const connectDB = async () => {
       console.log('👤 Created User: user@jaan.com / userjaan123');
     }
 
+    // Seed default plans if empty
+    const planCount = await Plan.countDocuments();
+    if (planCount === 0) {
+      const defaultPlans = [
+        {
+          name: 'Starter',
+          badge: null,
+          price: '₹24,999',
+          duration: '/week',
+          desc: 'Perfect for brand-building campaigns in a single market.',
+          features: ['1 city campaign', 'Up to 5 screens', 'Basic analytics dashboard', 'Email support', '72hr campaign activation'],
+          cta: 'Get Started',
+          highlight: false,
+          order: 1
+        },
+        {
+          name: 'Growth',
+          badge: 'Most Popular',
+          price: '₹79,999',
+          duration: '/month',
+          desc: 'The go-to plan for scaling brands across multiple cities.',
+          features: ['10 city campaigns', 'Up to 40 screens', 'Live analytics & attribution', 'Priority support (4hr SLA)', 'Same-day activation', 'Custom branding'],
+          cta: 'Start Free Trial',
+          highlight: true,
+          order: 2
+        },
+        {
+          name: 'Enterprise',
+          badge: null,
+          price: 'Custom',
+          duration: '',
+          desc: 'Unlimited scale with a dedicated Jaan Entertainment media team.',
+          features: ['Pan-India coverage', 'Unlimited screens', 'Advanced attribution & API', 'Dedicated account manager', 'Custom SLA', 'Quarterly business reviews'],
+          cta: 'Talk to Sales',
+          highlight: false,
+          order: 3
+        }
+      ];
+      await Plan.insertMany(defaultPlans);
+      console.log('📄 Seeded default pricing plans');
+    }
+
     // Seed Billboards removed by user request
   } catch (err) {
     console.error('❌ Database Connection Error:', err.message);
@@ -105,6 +148,7 @@ app.use('/api/videos', require('./routes/videos'));
 app.use('/api/schedule', require('./routes/schedules'));
 app.use('/api/device', require('./routes/device'));
 app.use('/api/billboards', require('./routes/billboards'));
+app.use('/api/plans', require('./routes/plans'));
 
 // Start Scheduler
 require('./services/scheduler');

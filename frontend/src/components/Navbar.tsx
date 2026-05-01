@@ -47,8 +47,9 @@ const Navbar = () => {
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
             >
-              <span className="text-[18px] font-black tracking-tight text-white transition-colors flex items-center overflow-hidden relative drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
-                JAAN<span className="text-rose-600 font-bold ml-1 relative overflow-hidden inline-flex items-center px-1 drop-shadow-none h-full">
+              <span className="text-[18px] font-black tracking-tight text-white transition-colors flex items-center overflow-hidden relative">
+                <span className="drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">JAAN</span>
+                <span className="text-rose-600 font-bold ml-1 relative overflow-hidden inline-flex items-center px-1 h-full">
                   ENTERTAINMENT
                 </span>
               </span>

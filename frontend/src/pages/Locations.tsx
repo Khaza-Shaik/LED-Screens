@@ -24,7 +24,11 @@ import { Plus, X } from 'lucide-react';
 
 function MapViewHandler({ center, zoom }: { center: { lat: number; lng: number }; zoom: number }) {
   const map = useMap();
-  useEffect(() => { map.setView([center.lat, center.lng], zoom); }, [center, zoom, map]);
+  useEffect(() => { 
+    if (center && typeof center.lat === 'number' && typeof center.lng === 'number' && !isNaN(center.lat) && !isNaN(center.lng)) {
+      map.setView([center.lat, center.lng], zoom); 
+    }
+  }, [center, zoom, map]);
   useEffect(() => {
     const timer = setTimeout(() => {
       map.invalidateSize();
@@ -60,27 +64,17 @@ const Locations = () => {
   const [mapCenter, setMapCenter] = useState(DEFAULT_MAP_CENTER);
   const [mapZoom, setMapZoom] = useState(12);
   const [selectedId, setSelectedId] = useState<string | number | null>(null);
-  const [showAddForm, setShowAddForm] = useState(false);
-  
-  const userRole = localStorage.getItem('userRole');
-  const isAdmin = userRole === 'admin';
-
-  const [newLocation, setNewLocation] = useState({
-    location: '',
-    price: '',
-    status: 'Active',
-    lat: 16.5062,
-    lng: 80.6480
-  });
 
   const fetchBillboards = async () => {
     try {
-      console.log('📡 Fetching billboards...');
-      const response = await API.get('/billboards');
-      // Normalize _id to id if needed
+      console.log('📡 Fetching screens...');
+      const response = await API.get('/screens');
+      // Normalize _id to id if needed and format data for the map
       const normalized = response.data.map((bb: any) => ({
         ...bb,
-        id: bb.id || bb._id
+        id: bb.id || bb._id,
+        price: `₹${bb.price || 0}`,
+        status: 'Active' // We can default to Active or use bb.status if mapped
       }));
       setBillboards(normalized);
       console.log('✅ Billboards loaded:', normalized.length);
@@ -96,31 +90,6 @@ const Locations = () => {
     fetchBillboards();
   }, []);
 
-  const handleAddLocation = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (isNaN(newLocation.lat) || isNaN(newLocation.lng)) {
-      alert('Invalid coordinates selected');
-      return;
-    }
-    try {
-      console.log('🚀 Adding location:', newLocation);
-      const res = await API.post('/billboards', newLocation);
-      console.log('✅ Location added:', res.data);
-      setShowAddForm(false);
-      fetchBillboards();
-      // ... reset state ...
-      setNewLocation({
-        location: '',
-        price: '',
-        status: 'Active',
-        lat: 16.5062,
-        lng: 80.6480
-      });
-    } catch (err) {
-      alert('Failed to add location');
-    }
-  };
-
   const filtered = useMemo(() => billboards.filter(bb => {
     const q = searchTerm.toLowerCase().trim();
     return (!q || bb.location.toLowerCase().includes(q)) &&
@@ -128,7 +97,9 @@ const Locations = () => {
   }), [billboards, searchTerm, statusFilter]);
 
   const focusBillboard = (bb: Billboard) => {
-    setMapCenter({ lat: bb.lat, lng: bb.lng });
+    const lat = typeof bb.lat === 'number' && !isNaN(bb.lat) ? bb.lat : DEFAULT_MAP_CENTER.lat;
+    const lng = typeof bb.lng === 'number' && !isNaN(bb.lng) ? bb.lng : DEFAULT_MAP_CENTER.lng;
+    setMapCenter({ lat, lng });
     setMapZoom(15);
     setSelectedId(bb.id);
   };
@@ -174,14 +145,6 @@ const Locations = () => {
               <SlidersHorizontal size={13} />
               {filtered.length} assets
             </div>
-            {isAdmin && (
-              <button 
-                onClick={() => setShowAddForm(true)}
-                className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 text-white text-xs font-black uppercase tracking-widest rounded-lg hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200"
-              >
-                <Plus size={14} /> Add Location
-              </button>
-            )}
           </div>
         </div>
       </div>
@@ -265,28 +228,11 @@ const Locations = () => {
             style={{ height: '100%', width: '100%' }}
             zoomControl={true}
           >
-            {isAdmin && showAddForm && (
-              <MapEvents onMapClick={(lat, lng) => {
-                if (isNaN(lat) || isNaN(lng)) return;
-                console.log('📍 State Update: Setting Lat/Lng', lat, lng);
-                setNewLocation(prev => ({ ...prev, lat, lng }));
-                setMapCenter({ lat, lng });
-              }} />
-            )}
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
               url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
             />
             <MapViewHandler center={mapCenter} zoom={mapZoom} />
-
-            {/* Preview Marker for New Location */}
-            {isAdmin && showAddForm && (
-              <Marker position={[newLocation.lat, newLocation.lng]} icon={customIcon}>
-                <Popup>
-                  <div className="text-xs font-bold p-1">New Location Target</div>
-                </Popup>
-              </Marker>
-            )}
 
             {filtered.map(bb => {
               if (isNaN(bb.lat) || isNaN(bb.lng)) return null;
@@ -331,85 +277,6 @@ const Locations = () => {
           </div>
         </div>
       </div>
-      {/* ─── Add Location Form Panel ───────────────── */}
-      <AnimatePresence>
-        {showAddForm && (
-          <div className="fixed top-24 right-6 z-[2000] w-full max-w-md pointer-events-none">
-            <motion.div 
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 50 }}
-              className="bg-white rounded-3xl overflow-hidden shadow-2xl border border-slate-200 pointer-events-auto"
-            >
-              <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-indigo-50/50">
-                <div>
-                  <h2 className="text-lg font-black text-slate-900">Add New Location</h2>
-                  <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest animate-pulse">Click on map to pick coordinates</p>
-                </div>
-                <button onClick={() => setShowAddForm(false)} className="text-slate-400 hover:text-slate-600">
-                  <X size={20} />
-                </button>
-              </div>
-              <form onSubmit={handleAddLocation} className="p-6 space-y-4">
-                <div className="space-y-1">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Location Name</label>
-                  <input 
-                    type="text" 
-                    required
-                    value={newLocation.location}
-                    onChange={e => setNewLocation({...newLocation, location: e.target.value})}
-                    placeholder="e.g. Times Square, NY"
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-sm focus:outline-none focus:border-indigo-500 transition-all"
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Price (e.g. ₹5,000/hr)</label>
-                    <input 
-                      type="text" 
-                      required
-                      value={newLocation.price}
-                      onChange={e => setNewLocation({...newLocation, price: e.target.value})}
-                      placeholder="₹5,000/hr"
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-sm focus:outline-none focus:border-indigo-500 transition-all"
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Latitude</label>
-                    <input 
-                      type="number" 
-                      step="0.0001"
-                      required
-                      value={newLocation.lat}
-                      onChange={e => setNewLocation({...newLocation, lat: parseFloat(e.target.value)})}
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-sm focus:outline-none focus:border-indigo-500 transition-all"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Longitude</label>
-                    <input 
-                      type="number" 
-                      step="0.0001"
-                      required
-                      value={newLocation.lng}
-                      onChange={e => setNewLocation({...newLocation, lng: parseFloat(e.target.value)})}
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-sm focus:outline-none focus:border-indigo-500 transition-all"
-                    />
-                  </div>
-                </div>
-                <button 
-                  type="submit"
-                  className="w-full py-4 bg-indigo-600 text-white font-black uppercase tracking-widest rounded-xl hover:bg-indigo-700 shadow-xl shadow-indigo-200 transition-all mt-4"
-                >
-                  Create Location Asset
-                </button>
-              </form>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
     </div>
   );
 };
