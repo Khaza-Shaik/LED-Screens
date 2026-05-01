@@ -1,5 +1,6 @@
 export interface Billboard {
   id: string | number;
+  name?: string;
   location: string;
   status: 'Active' | 'High Demand';
   price: string;
