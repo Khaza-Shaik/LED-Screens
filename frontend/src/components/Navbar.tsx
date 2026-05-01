@@ -15,7 +15,7 @@ const Navbar = () => {
     { label: 'Home', to: '/' },
     { label: 'Locations', to: '/locations' },
     { label: 'Plans', to: '/pricing' },
-    { label: userRole === 'admin' ? 'Live Booking' : 'Slot Booked', to: '/slot-booked' },
+    { label: userRole === 'admin' ? 'Live Booking' : 'My Bookings', to: '/slot-booked' },
   ];
 
   useEffect(() => {

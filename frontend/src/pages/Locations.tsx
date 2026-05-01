@@ -77,7 +77,7 @@ const Locations = () => {
 
   const filtered = useMemo(() => billboards.filter(bb => {
     const q = searchTerm.toLowerCase().trim();
-    return (!q || bb.location.toLowerCase().includes(q)) &&
+    return (!q || (bb.location && bb.location.toLowerCase().includes(q)) || (bb.name && bb.name.toLowerCase().includes(q))) &&
       (statusFilter === 'All' || bb.status === statusFilter);
   }), [billboards, searchTerm, statusFilter]);
 
@@ -176,7 +176,7 @@ const Locations = () => {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1.5">
                         <MapPin size={14} className={selectedId === bb.id ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-400 transition-colors'} />
-                        <span className={`text-sm font-bold truncate tracking-tight transition-colors ${selectedId === bb.id ? 'text-indigo-700' : 'text-slate-900'}`}>{bb.location}</span>
+                        <span className={`text-sm font-bold truncate tracking-tight transition-colors ${selectedId === bb.id ? 'text-indigo-700' : 'text-slate-900'}`}>{bb.name ? `${bb.name}, ${bb.location.split(',')[0]}` : bb.location}</span>
                       </div>
                       <div className="flex items-center gap-3 mt-3">
                         <span className={`text-[9px] font-black px-2.5 py-1 rounded-full border uppercase tracking-widest transition-all ${
@@ -231,7 +231,7 @@ const Locations = () => {
                   <Popup>
                     <div className="min-w-[200px] p-1">
                       <div className="flex items-start justify-between mb-2 pb-2 border-b border-slate-100">
-                        <h3 className="font-bold text-slate-900 text-sm leading-tight">{bb.location}</h3>
+                        <h3 className="font-bold text-slate-900 text-sm leading-tight">{bb.name ? `${bb.name}, ${bb.location.split(',')[0]}` : bb.location}</h3>
                         <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ml-2 shrink-0 ${
                           bb.status === 'Active' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
                         }`}>{bb.status}</span>
