@@ -38,7 +38,6 @@ const defaultPlans = [
 
 const Pricing = () => {
   const [plans, setPlans] = useState(defaultPlans);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchPlans = async () => {
@@ -52,8 +51,6 @@ const Pricing = () => {
         }
       } catch (err) {
         console.error('Failed to fetch plans, using defaults:', err);
-      } finally {
-        setLoading(false);
       }
     };
     fetchPlans();

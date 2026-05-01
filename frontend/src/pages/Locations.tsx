@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Search, ChevronRight, TrendingUp, Filter, SlidersHorizontal } from 'lucide-react';
+import { MapPin, Search, ChevronRight, Filter, SlidersHorizontal } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
@@ -18,9 +18,8 @@ const customIcon = new L.Icon({
   iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
 });
 
-import { FALLBACK_BILLBOARDS, DEFAULT_MAP_CENTER, type Billboard } from '../data/inventory';
+import { DEFAULT_MAP_CENTER, type Billboard } from '../data/inventory';
 import API from '../services/api';
-import { Plus, X } from 'lucide-react';
 
 function MapViewHandler({ center, zoom }: { center: { lat: number; lng: number }; zoom: number }) {
   const map = useMap();
@@ -38,20 +37,6 @@ function MapViewHandler({ center, zoom }: { center: { lat: number; lng: number }
   return null;
 }
 
-function MapEvents({ onMapClick }: { onMapClick: (lat: number, lng: number) => void }) {
-  useEffect(() => {
-    console.log('🗺️ Map Click Listener: Active');
-    return () => console.log('🗺️ Map Click Listener: Inactive');
-  }, []);
-
-  useMapEvents({
-    click(e) {
-      console.log('📍 Map Click Detected:', e.latlng);
-      onMapClick(e.latlng.lat, e.latlng.lng);
-    },
-  });
-  return null;
-}
 
 const statusOptions = ['All', 'Active', 'High Demand'] as const;
 type StatusFilter = typeof statusOptions[number];

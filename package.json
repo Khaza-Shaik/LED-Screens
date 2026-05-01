@@ -2,7 +2,8 @@
   "name": "jaan-entertainment-monorepo",
   "version": "1.0.0",
   "scripts": {
-    "build": "cd frontend && npm install && npm run build && cp -r dist ../dist",
+    "build": "cd frontend && npm install && npm run build && cd .. && cp -r frontend/dist ./dist",
+    "vercel-build": "cd frontend && npm install && npm run build && cd .. && mkdir -p dist && cp -r frontend/dist/* dist/",
     "install-all": "npm install && cd frontend && npm install && cd ../backend && npm install",
     "dev": "npx concurrently \"cd backend && npm start\" \"cd frontend && npm run dev\""
   }
